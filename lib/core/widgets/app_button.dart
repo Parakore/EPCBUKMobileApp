@@ -1,39 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../theme/app_theme.dart';
 
 class AppButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isLoading;
   final Color? backgroundColor;
   final Color? foregroundColor;
+  final double? width;
+  final Widget? icon;
 
   const AppButton({
     super.key,
     required this.text,
-    required this.onPressed,
+    this.onPressed,
     this.isLoading = false,
     this.backgroundColor,
     this.foregroundColor,
+    this.width,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        foregroundColor: foregroundColor,
+    return Container(
+      width: width ?? double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          if (onPressed != null)
+            BoxShadow(
+              color: (backgroundColor ?? AppTheme.forestGreen)
+                  .withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+        ],
       ),
-      child: isLoading
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor ?? AppTheme.forestGreen,
+          foregroundColor: foregroundColor ?? Colors.white,
+          disabledBackgroundColor: Colors.grey[300],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (icon != null) ...[
+                    icon!,
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    text,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ],
               ),
-            )
-          : Text(text),
+      ).animate(target: isLoading ? 0 : 1).scale(
+            begin: const Offset(0.98, 0.98),
+            end: const Offset(1, 1),
+            duration: 100.ms,
+          ),
     );
   }
 }

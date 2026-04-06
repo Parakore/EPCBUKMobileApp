@@ -1,16 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
-class NetworkClient {
+class DioClient {
   late final Dio _dio;
-  final Logger _logger = Logger();
+  final _logger = Logger();
 
-  NetworkClient() {
+  DioClient() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.forest-management.com/v1/', // Mock URL
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        baseUrl: 'https://api.utcms.gov.in/v1', // Placeholder base URL
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -18,6 +18,10 @@ class NetworkClient {
       ),
     );
 
+    _addInterceptors();
+  }
+
+  void _addInterceptors() {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
@@ -25,16 +29,21 @@ class NetworkClient {
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          _logger.i('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+          _logger
+              .d('RESPONSE[${response.statusCode}] => DATA: ${response.data}');
           return handler.next(response);
         },
         onError: (DioException e, handler) {
-          _logger.e('ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}');
+          _logger
+              .e('ERROR[${e.response?.statusCode}] => MESSAGE: ${e.message}');
           return handler.next(e);
         },
       ),
     );
   }
 
-  Dio get dio => _dio;
+  Dio get instance => _dio;
 }
+
+// Global provider-like singleton for simplicity in core
+final dioClient = DioClient();

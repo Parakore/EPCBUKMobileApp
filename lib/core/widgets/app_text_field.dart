@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
 class AppTextField extends StatelessWidget {
   final String labelText;
@@ -7,8 +8,9 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
-  final TextInputType keyboardType;
   final String? Function(String?)? validator;
+  final TextInputType keyboardType;
+  final Function(String)? onChanged;
 
   const AppTextField({
     super.key,
@@ -18,8 +20,9 @@ class AppTextField extends StatelessWidget {
     this.obscureText = false,
     this.prefixIcon,
     this.suffixIcon,
-    this.keyboardType = TextInputType.text,
     this.validator,
+    this.keyboardType = TextInputType.text,
+    this.onChanged,
   });
 
   @override
@@ -29,21 +32,54 @@ class AppTextField extends StatelessWidget {
       children: [
         Text(
           labelText,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+                color: AppTheme.primaryGreen.withOpacity(0.8),
+                letterSpacing: 1,
               ),
         ),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           obscureText: obscureText,
-          keyboardType: keyboardType,
           validator: validator,
+          keyboardType: keyboardType,
+          onChanged: onChanged,
+          style: const TextStyle(fontSize: 16),
           decoration: InputDecoration(
             hintText: hintText,
-            prefixIcon: prefixIcon,
+            hintStyle: TextStyle(color: Colors.grey[400]),
+            prefixIcon: prefixIcon != null
+                ? IconTheme(
+                    data: IconThemeData(color: AppTheme.primaryGreen),
+                    child: prefixIcon!,
+                  )
+                : null,
             suffixIcon: suffixIcon,
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: Colors.grey[200]!),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: Colors.grey[200]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: AppTheme.primaryGreen, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+            ),
           ),
         ),
       ],

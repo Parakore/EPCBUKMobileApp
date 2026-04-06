@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../providers/providers.dart';
+import '../model/dashboard_metrics.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -12,6 +17,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardState = ref.watch(dashboardViewModelProvider);
+    final user = ref.watch(authViewModelProvider).user;
 
     return Scaffold(
       appBar: AppAppBar(
@@ -23,157 +29,601 @@ class DashboardScreen extends ConsumerWidget {
                 ref.read(dashboardViewModelProvider.notifier).refresh(),
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authViewModelProvider.notifier).logout(),
+            icon: const Icon(Icons.notifications_none_outlined),
+            onPressed: () {},
           ),
         ],
       ),
+      drawer: _buildDrawer(context, ref),
       body: dashboardState.when(
         data: (metrics) => RefreshIndicator(
           onRefresh: () =>
               ref.read(dashboardViewModelProvider.notifier).refresh(),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildWelcomeHeader(context, ref),
+                _buildExecutiveHeader(context, user?.name ?? 'State Admin'),
                 const SizedBox(height: 24),
-                _buildMetricsGrid(context, metrics),
-                const SizedBox(height: 24),
-                _buildSectionHeader(context, 'Recent Activity'),
-                const SizedBox(height: 16),
-                _buildActivityList(context),
+                _buildAnalyticsGrid(context, metrics),
+                const SizedBox(height: 32),
+                _buildChartsSection(context),
+                const SizedBox(height: 32),
+                _buildAIIntelligenceCenter(context, metrics),
+                const SizedBox(height: 32),
+                _buildSLAPerformance(context, metrics),
+                const SizedBox(height: 32),
+                _buildRecentActivityTable(context, metrics),
+                const SizedBox(height: 40),
               ],
             ),
           ),
         ),
-        loading: () => const AppLoader(message: 'Loading metrics...'),
+        loading: () => const AppLoader(message: 'Syncing metrics...'),
         error: (err, stack) => AppErrorWidget(
           message: err.toString(),
           onRetry: () =>
               ref.read(dashboardViewModelProvider.notifier).refresh(),
         ),
       ),
+      bottomNavigationBar: _buildBottomNav(),
     );
   }
 
-  Widget _buildWelcomeHeader(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authViewModelProvider).user;
+  Widget _buildExecutiveHeader(BuildContext context, String name) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Welcome back,',
-          style: Theme.of(context).textTheme.titleMedium,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'State Executive Dashboard – Uttarakhand',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                Text(
+                  'Home → State Admin Dashboard',
+                  style: TextStyle(color: Colors.grey[500], fontSize: 10),
+                ),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.red.withOpacity(0.3)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.sensors, color: Colors.red, size: 14)
+                      .animate(onPlay: (controller) => controller.repeat())
+                      .fadeIn(duration: 500.ms)
+                      .fadeOut(delay: 500.ms),
+                  const SizedBox(width: 4),
+                  const Text('LIVE',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          ],
         ),
+        const SizedBox(height: 12),
         Text(
-          user?.name ?? 'Distinguished User',
+          'Suprabhat, $name',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+                color: AppTheme.primaryGreen,
               ),
         ),
       ],
-    );
+    ).animate().fadeIn().moveY(begin: -10, end: 0);
   }
 
-  Widget _buildMetricsGrid(BuildContext context, metrics) {
+  Widget _buildAnalyticsGrid(BuildContext context, DashboardMetrics metrics) {
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 16,
-      childAspectRatio: 1.1,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 1.4,
       children: [
-        _buildMetricCard(
-          context,
-          'Applications',
-          metrics.totalApplications.toString(),
-          Icons.description_outlined,
-          Colors.blue,
-        ),
-        _buildMetricCard(
-          context,
-          'Trees Count',
-          metrics.treesPlanted.toString(),
-          Icons.park_outlined,
-          Colors.green,
-        ),
-        _buildMetricCard(
-          context,
-          'Compensation',
-          '₹${metrics.compensationPaid.toStringAsFixed(0)}',
-          Icons.payments_outlined,
-          Colors.orange,
-        ),
-        _buildMetricCard(
-          context,
-          'Pending',
-          metrics.pendingApprovals.toString(),
-          Icons.pending_actions_outlined,
-          Colors.red,
-        ),
+        _buildKMICard(
+            'Total Applications',
+            metrics.totalApplications.toString(),
+            Icons.assignment,
+            Colors.blue),
+        _buildKMICard('Trees Enumerated', metrics.treesEnumerated.toString(),
+            Icons.park, Colors.green),
+        _buildKMICard(
+            'Compensation Paid',
+            '₹${(metrics.compensationPaid / 10000000).toStringAsFixed(1)}Cr',
+            Icons.account_balance_wallet,
+            Colors.amber[700]!),
+        _buildKMICard('Pending Approvals', metrics.pendingApprovals.toString(),
+            Icons.hourglass_empty, Colors.orange),
+        _buildKMICard('SLA Breaches', metrics.slaBreaches.toString(),
+            Icons.warning_amber, Colors.red),
+        _buildKMICard('Districts Active', '${metrics.activeDistricts}/13',
+            Icons.map, Colors.teal),
+        _buildKMICard('Afforestation', '${metrics.afforestationProgress}%',
+            Icons.eco, Colors.lightGreen),
+        _buildKMICard('Env. Impact Index', metrics.environmentImpactIndex,
+            Icons.forest, Colors.brown),
       ],
     );
   }
 
-  Widget _buildMetricCard(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildKMICard(String label, String value, IconData icon, Color color) {
     return AppCard(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      color: color.withOpacity(0.03),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, color: color, size: 32),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, color: color, size: 18),
+              Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  shape: BoxShape.circle,
                 ),
+                child: const Icon(Icons.trending_up,
+                    color: Colors.green, size: 12),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Text(
+                label,
+                style: TextStyle(color: Colors.grey[600], fontSize: 10),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
+  Widget _buildChartsSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('📊 Performance Analytics',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        AppCard(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const Text('Monthly Application Volume',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 180,
+                child: LineChart(
+                  LineChartData(
+                    gridData: const FlGridData(show: false),
+                    titlesData: const FlTitlesData(show: false),
+                    borderData: FlBorderData(show: false),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: const [
+                          FlSpot(0, 31),
+                          FlSpot(2, 42),
+                          FlSpot(4, 38),
+                          FlSpot(6, 45),
+                          FlSpot(8, 52),
+                          FlSpot(10, 48),
+                        ],
+                        isCurved: true,
+                        color: AppTheme.primaryGreen,
+                        barWidth: 3,
+                        belowBarData: BarAreaData(
+                            show: true,
+                            color: AppTheme.primaryGreen.withOpacity(0.1)),
+                        dotData: const FlDotData(show: false),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
+        ),
+      ],
     );
   }
 
-  Widget _buildActivityList(BuildContext context) {
+  Widget _buildAIIntelligenceCenter(
+      BuildContext context, DashboardMetrics metrics) {
     return Column(
-      children: List.generate(3, (index) {
-        return AppCard(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const CircleAvatar(
-              backgroundColor: Colors.green,
-              child: Icon(Icons.add, color: Colors.white),
-            ),
-            title: Text('New application received #APP-${1000 + index}'),
-            subtitle: Text('2 hours ago • Dehradun Division'),
-            trailing: const Icon(Icons.chevron_right),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.psychology, color: Colors.purple, size: 24),
+            const SizedBox(width: 8),
+            const Text('AI Intelligence Center',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        const SizedBox(height: 16),
+        AppCard(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              _buildAIMetricRow('Fraud / Duplication Detection',
+                  metrics.fraudDetectionAccuracy),
+              _buildAIMetricRow('Compensation Prediction Score',
+                  metrics.compensationPredictionScore),
+              _buildAIMetricRow(
+                  'Risk Scoring Accuracy', metrics.riskScoringAccuracy),
+              _buildAIMetricRow(
+                  'Tree Species ID Accuracy', metrics.speciesIdAccuracy),
+              _buildAIMetricRow('Document Authenticity Scan',
+                  metrics.documentAuthenticityScan),
+              const Divider(height: 32),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.purple.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.forest, color: Colors.purple, size: 20),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('🔮 Next Month Forecast',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple)),
+                          Text(metrics.predictedNextMonthApps,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        );
-      }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAIMetricRow(String label, double percentage) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label,
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w500)),
+              Text('${percentage.toInt()}%',
+                  style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          LinearProgressIndicator(
+            value: percentage / 100,
+            backgroundColor: Colors.purple.withOpacity(0.1),
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.purple),
+            minHeight: 4,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSLAPerformance(BuildContext context, DashboardMetrics metrics) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('⏱ SLA Performance by Dept.',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        AppCard(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: metrics.slaPerformance
+                .map((sla) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(sla.department,
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold)),
+                              Text('Target: ${sla.slaDays} Days',
+                                  style: TextStyle(
+                                      fontSize: 11, color: Colors.grey[600])),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: LinearProgressIndicator(
+                                  value: sla.percentage / 100,
+                                  backgroundColor:
+                                      Colors.orange.withOpacity(0.1),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      sla.percentage > 85
+                                          ? Colors.green
+                                          : Colors.orange),
+                                  minHeight: 6,
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text('${sla.percentage.toInt()}%',
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecentActivityTable(
+      BuildContext context, DashboardMetrics metrics) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('📜 Recent State-wide Activity',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              headingRowHeight: 40,
+              dataRowHeight: 56,
+              columnSpacing: 24,
+              columns: const [
+                DataColumn(
+                    label: Text('Case ID',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13))),
+                DataColumn(
+                    label: Text('District',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13))),
+                DataColumn(
+                    label: Text('By',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13))),
+                DataColumn(
+                    label: Text('Status',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13))),
+              ],
+              rows: metrics.recentActivities
+                  .map((activity) => DataRow(
+                        cells: [
+                          DataCell(Text(activity.caseId,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.blue))),
+                          DataCell(Text(activity.district,
+                              style: const TextStyle(fontSize: 12))),
+                          DataCell(Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(activity.by,
+                                  style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500)),
+                              Text(activity.time,
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.grey[600])),
+                            ],
+                          )),
+                          DataCell(_buildStatusBadge(activity.status)),
+                        ],
+                      ))
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusBadge(String status) {
+    Color color;
+    switch (status) {
+      case 'New':
+        color = Colors.blue;
+        break;
+      case 'Progress':
+        color = Colors.orange;
+        break;
+      case 'Alert':
+        color = Colors.red;
+        break;
+      case 'Done':
+        color = Colors.green;
+        break;
+      default:
+        color = Colors.grey;
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Text(
+        status,
+        style:
+            TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context, WidgetRef ref) {
+    return Drawer(
+      width: 280,
+      child: Column(
+        children: [
+          _buildDrawerHeader(),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                _buildDrawerItem(Icons.dashboard, 'Dashboard', isActive: true),
+                _buildDrawerItem(Icons.description, 'Applications Management'),
+                _buildDrawerItem(Icons.add_circle, 'New App Entry'),
+                _buildDrawerItem(Icons.account_tree, 'Workflow Engine'),
+                _buildDrawerItem(Icons.calculate, 'Comp. Calculator'),
+                _buildDrawerItem(Icons.map, 'GIS Monitoring'),
+                _buildDrawerItem(Icons.psychology, 'AI Intelligence'),
+                _buildDrawerItem(Icons.view_quilt, 'Command Center'),
+                const Divider(),
+                _buildDrawerItem(Icons.person, 'My Profile'),
+                _buildDrawerItem(Icons.settings, 'System Settings'),
+                _buildDrawerItem(Icons.history, 'Audit Logs'),
+                const Divider(),
+                _buildDrawerItem(Icons.logout, 'Logout', color: Colors.red,
+                    onTap: () {
+                  ref.read(authViewModelProvider.notifier).logout();
+                  context.go('/login');
+                }),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text('UTCMS v1.0.0 Alpha',
+                style: TextStyle(color: Colors.grey[500], fontSize: 10)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerHeader() {
+    return Container(
+      padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
+      decoration: const BoxDecoration(
+        color: AppTheme.primaryGreen,
+        image: DecorationImage(
+          image: NetworkImage(
+              'https://placeholder.com/forest_texture'), // In real app use asset
+          fit: BoxFit.cover,
+          opacity: 0.1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.white,
+            child: Icon(Icons.security, color: AppTheme.primaryGreen, size: 30),
+          ),
+          const SizedBox(height: 16),
+          const Text('Uttarakhand State',
+              style: TextStyle(color: Colors.white70, fontSize: 12)),
+          const Text('Executive Admin Portal',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title,
+      {bool isActive = false, Color? color, VoidCallback? onTap}) {
+    return ListTile(
+      leading: Icon(icon,
+          color: color ?? (isActive ? AppTheme.primaryGreen : Colors.grey[700]),
+          size: 22),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: color ?? (isActive ? AppTheme.primaryGreen : Colors.grey[800]),
+          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+          fontSize: 14,
+        ),
+      ),
+      dense: true,
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildBottomNav() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: AppTheme.primaryGreen,
+      unselectedItemColor: Colors.grey,
+      showUnselectedLabels: true,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
+        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Track'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline), label: 'Apply'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline), label: 'Profile'),
+      ],
     );
   }
 }

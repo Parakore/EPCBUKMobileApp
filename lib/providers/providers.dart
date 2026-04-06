@@ -7,11 +7,11 @@ import '../features/dashboard/viewmodel/dashboard_viewmodel.dart';
 import '../core/network/dio_client.dart';
 
 // --- Core Providers ---
-final networkClientProvider = Provider((ref) => NetworkClient());
+final networkClientProvider = Provider((ref) => DioClient());
 
 // --- Repository Providers ---
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  final dio = ref.watch(networkClientProvider).dio;
+  final dio = ref.watch(networkClientProvider).instance;
   return AuthRepositoryImpl(dio);
 });
 
@@ -20,7 +20,8 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
 });
 
 // --- ViewModel Providers ---
-final authViewModelProvider = StateNotifierProvider<AuthViewModel, AuthState>((ref) {
+final authViewModelProvider =
+    StateNotifierProvider<AuthViewModel, AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   return AuthViewModel(repository);
 });
