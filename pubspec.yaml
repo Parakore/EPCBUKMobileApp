@@ -1,0 +1,48 @@
+name: epcbuk_mobile_app
+description: A production-ready Forest / Tree / Environment Management System.
+version: 0.1.0+1
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Navigation
+  go_router: ^13.2.0
+
+  # Network
+  dio: ^5.4.1
+
+  # Fonts & Assets
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+
+  # Utils
+  intl: ^0.19.0
+  logger: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  # Code Generation
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.3.11
+  custom_lint: ^0.6.2
+  riverpod_lint: ^2.3.10
+
+flutter:
+  uses-material-design: true
+  
+  # [MANDATORY] Assets configuration
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+  #   - assets/vectors/
