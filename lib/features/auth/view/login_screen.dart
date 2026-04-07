@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/models/user_role.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/theme/app_theme.dart';
@@ -19,18 +20,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _userIdController = TextEditingController();
   final _passwordController = TextEditingController();
   final _captchaController = TextEditingController();
-  String? _selectedRole;
-
-  final List<String> _roles = [
-    'Administrator',
-    'Forest Officer',
-    'Field Executive',
-    'Department User',
-    'Applicant',
-    'Nodal Officer',
-    'Member Secretary',
-    'Public User'
-  ];
+  UserRole? _selectedRole;
 
   @override
   void dispose() {
@@ -51,7 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       // Step 1: Send OTP
       final success = await ref.read(authViewModelProvider.notifier).sendOtp(
-            role: _selectedRole!,
+            role: _selectedRole!.name,
             userId: _userIdController.text,
             password: _passwordController.text,
           );
@@ -81,7 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppTheme.primaryGreen.withOpacity(0.08),
+                  AppTheme.primaryGreen.withValues(alpha: 0.08),
                   Colors.white,
                 ],
               ),
@@ -101,7 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryGreen.withOpacity(0.1),
+                          color: AppTheme.primaryGreen.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.park,
@@ -128,7 +118,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 40),
 
                     // Role Selection
-                    DropdownButtonFormField<String>(
+                    DropdownButtonFormField<UserRole>(
                       value: _selectedRole,
                       decoration: InputDecoration(
                         labelText: 'Select User Role',
@@ -137,8 +127,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      items: _roles.map((role) {
-                        return DropdownMenuItem(value: role, child: Text(role));
+                      items: UserRole.values.map((role) {
+                        return DropdownMenuItem(
+                          value: role,
+                          child: Text(role.label),
+                        );
                       }).toList(),
                       onChanged: (val) => setState(() => _selectedRole = val),
                     ),

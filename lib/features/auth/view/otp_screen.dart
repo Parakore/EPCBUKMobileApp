@@ -52,9 +52,10 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
       return;
     }
 
-    final success = await ref.read(authViewModelProvider.notifier).verifyOtp(_otp!);
+    final success =
+        await ref.read(authViewModelProvider.notifier).verifyOtp(_otp!);
     if (success && mounted) {
-      context.go('/dashboard');
+      context.go('/home/dashboard');
     }
   }
 
@@ -80,10 +81,11 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryGreen.withOpacity(0.1),
+                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.security_outlined, size: 64, color: AppTheme.primaryGreen),
+                  child: const Icon(Icons.security_outlined,
+                      size: 64, color: AppTheme.primaryGreen),
                 ),
               ).animate().fadeIn().scale(),
               const SizedBox(height: 24),
@@ -130,7 +132,9 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
                     if (_timer > 0)
                       Text(
                         'Resend in ${_timer}s',
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryGreen),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primaryGreen),
                       )
                     else
                       TextButton(

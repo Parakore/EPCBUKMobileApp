@@ -34,7 +34,7 @@ class AppTextField extends StatelessWidget {
           labelText,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppTheme.primaryGreen.withOpacity(0.8),
+                color: AppTheme.primaryGreen.withValues(alpha: 0.8),
                 letterSpacing: 1,
               ),
         ),
@@ -51,7 +51,7 @@ class AppTextField extends StatelessWidget {
             hintStyle: TextStyle(color: Colors.grey[400]),
             prefixIcon: prefixIcon != null
                 ? IconTheme(
-                    data: IconThemeData(color: AppTheme.primaryGreen),
+                    data: const IconThemeData(color: AppTheme.primaryGreen),
                     child: prefixIcon!,
                   )
                 : null,

@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../providers/providers.dart';
 
-class SplashView extends StatefulWidget {
+class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
 
   @override
-  State<SplashView> createState() => _SplashViewState();
+  ConsumerState<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> {
+class _SplashViewState extends ConsumerState<SplashView> {
   @override
   void initState() {
     super.initState();
-    _navigateToLogin();
+    _handleStartUp();
   }
 
-  void _navigateToLogin() async {
+  void _handleStartUp() async {
     await Future.delayed(const Duration(seconds: 3));
-    if (mounted) {
+    if (!mounted) return;
+
+    final authState = ref.read(authViewModelProvider);
+    
+    if (authState.isAuthenticated) {
+      context.go('/home/dashboard');
+    } else {
       context.go('/login');
     }
   }

@@ -71,20 +71,29 @@ lib/
 
 ---
 
-## 🔐 5. 2-Step Authentication Flow
+## 🔐 5. 2-Step Authentication & Session Persistence
 
 1. **Step 1 (Login)**: User selects **Role**, enters **ID** and **Password** + **CAPTCHA**.
 2. **Step 2 (OTP)**: A 6-digit secure code is sent for verification.
-3. **Session**: Secure JWT token is handled via `Dio` interceptors for authorized requests.
+3. **Session Persistence**: Secure JWT token and user profile are persisted via `shared_preferences`. The app bypasses login on subsequent launches if the session is active.
+4. **Security**: Session is cleared upon manual logout or expiration.
 
 ---
 
-## 📊 6. Executive Dashboard
+## 🧭 6. Executive Dashboard & Command Center
 
-The dashboard provides a high-level overview for forest officers:
+The application features dual executive monitoring modes:
+
+### Executive Dashboard
 - **KPI Grid**: Real-time tracking of Applications, Tree Counts, and Compensation.
 - **Interactive Line Charts**: Monthly progress tracking for environmental goals.
 - **Recent Activity**: Quick access to the latest verification logs.
+
+### 📡 Command Center (Admin & DM Roles Only)
+- **40+ Advanced KPIs**: Split into 5 categories (State, Financial, Environmental, Operational, Compliance).
+- **Live Monitoring Hub**: Visual indicators for real-time district sync.
+- **Rich Data Visualizations**: Bar and Line Charts for district-wise compensation and afforestation trends.
+- **Performance Indexing**: Survival rates, CO2 sequestration, and SLA compliance metrics.
 
 ---
 

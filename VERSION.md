@@ -1,5 +1,19 @@
 # VERSION.md - Project Tracking
 
+[0.3.0] - 2026-04-06
+
+### Added
+- [FEATURE] Persistent Login: Users remain logged in after app restart via `shared_preferences`.
+- [FEATURE] Executive Command Center: A high-fidelity screen with 40+ KPIs across 5 categories (State, Financial, Env, Ops, Compliance).
+- [FEATURE] Interactive Advanced Analytics: District-wise compensation and afforestation progress charts (fl_chart).
+- [UI] Live status indicator for real-time monitoring.
+- [CORE] `StorageService` for secure local session management.
+
+### Updated
+- `SplashView` logic to support auto-login redirects.
+- `AuthViewModel` with role-based persistence initialization.
+- `AppRouter` with specific routes for Command Center.
+
 [0.2.0] - 2026-04-06
 
 ### Added

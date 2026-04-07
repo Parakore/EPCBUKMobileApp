@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:go_router/go_router.dart';
-import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
@@ -19,55 +17,36 @@ class DashboardScreen extends ConsumerWidget {
     final dashboardState = ref.watch(dashboardViewModelProvider);
     final user = ref.watch(authViewModelProvider).user;
 
-    return Scaffold(
-      appBar: AppAppBar(
-        title: 'Executive Dashboard',
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(dashboardViewModelProvider.notifier).refresh(),
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_none_outlined),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      drawer: _buildDrawer(context, ref),
-      body: dashboardState.when(
-        data: (metrics) => RefreshIndicator(
-          onRefresh: () =>
-              ref.read(dashboardViewModelProvider.notifier).refresh(),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildExecutiveHeader(context, user?.name ?? 'State Admin'),
-                const SizedBox(height: 24),
-                _buildAnalyticsGrid(context, metrics),
-                const SizedBox(height: 32),
-                _buildChartsSection(context),
-                const SizedBox(height: 32),
-                _buildAIIntelligenceCenter(context, metrics),
-                const SizedBox(height: 32),
-                _buildSLAPerformance(context, metrics),
-                const SizedBox(height: 32),
-                _buildRecentActivityTable(context, metrics),
-                const SizedBox(height: 40),
-              ],
-            ),
+    return dashboardState.when(
+      data: (metrics) => RefreshIndicator(
+        onRefresh: () =>
+            ref.read(dashboardViewModelProvider.notifier).refresh(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildExecutiveHeader(context, user?.name ?? 'State Admin'),
+              const SizedBox(height: 24),
+              _buildAnalyticsGrid(context, metrics),
+              const SizedBox(height: 32),
+              _buildChartsSection(context),
+              const SizedBox(height: 32),
+              _buildAIIntelligenceCenter(context, metrics),
+              const SizedBox(height: 32),
+              _buildSLAPerformance(context, metrics),
+              const SizedBox(height: 32),
+              _buildRecentActivityTable(context, metrics),
+              const SizedBox(height: 40),
+            ],
           ),
         ),
-        loading: () => const AppLoader(message: 'Syncing metrics...'),
-        error: (err, stack) => AppErrorWidget(
-          message: err.toString(),
-          onRetry: () =>
-              ref.read(dashboardViewModelProvider.notifier).refresh(),
-        ),
       ),
-      bottomNavigationBar: _buildBottomNav(),
+      loading: () => const AppLoader(message: 'Syncing metrics...'),
+      error: (err, stack) => AppErrorWidget(
+        message: err.toString(),
+        onRetry: () => ref.read(dashboardViewModelProvider.notifier).refresh(),
+      ),
     );
   }
 
@@ -97,9 +76,9 @@ class DashboardScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: Colors.red.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.red.withOpacity(0.3)),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -169,7 +148,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget _buildKMICard(String label, String value, IconData icon, Color color) {
     return AppCard(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      color: color.withOpacity(0.03),
+      color: color.withValues(alpha: 0.03),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -181,7 +160,7 @@ class DashboardScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.trending_up,
@@ -246,7 +225,8 @@ class DashboardScreen extends ConsumerWidget {
                         barWidth: 3,
                         belowBarData: BarAreaData(
                             show: true,
-                            color: AppTheme.primaryGreen.withOpacity(0.1)),
+                            color:
+                                AppTheme.primaryGreen.withValues(alpha: 0.1)),
                         dotData: const FlDotData(show: false),
                       ),
                     ],
@@ -292,7 +272,7 @@ class DashboardScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.purple.withOpacity(0.05),
+                  color: Colors.purple.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -345,7 +325,7 @@ class DashboardScreen extends ConsumerWidget {
           const SizedBox(height: 6),
           LinearProgressIndicator(
             value: percentage / 100,
-            backgroundColor: Colors.purple.withOpacity(0.1),
+            backgroundColor: Colors.purple.withValues(alpha: 0.1),
             valueColor: const AlwaysStoppedAnimation<Color>(Colors.purple),
             minHeight: 4,
             borderRadius: BorderRadius.circular(2),
@@ -390,7 +370,7 @@ class DashboardScreen extends ConsumerWidget {
                                 child: LinearProgressIndicator(
                                   value: sla.percentage / 100,
                                   backgroundColor:
-                                      Colors.orange.withOpacity(0.1),
+                                      Colors.orange.withValues(alpha: 0.1),
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                       sla.percentage > 85
                                           ? Colors.green
@@ -505,125 +485,15 @@ class DashboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         status,
         style:
             TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
       ),
-    );
-  }
-
-  Widget _buildDrawer(BuildContext context, WidgetRef ref) {
-    return Drawer(
-      width: 280,
-      child: Column(
-        children: [
-          _buildDrawerHeader(),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                _buildDrawerItem(Icons.dashboard, 'Dashboard', isActive: true),
-                _buildDrawerItem(Icons.description, 'Applications Management'),
-                _buildDrawerItem(Icons.add_circle, 'New App Entry'),
-                _buildDrawerItem(Icons.account_tree, 'Workflow Engine'),
-                _buildDrawerItem(Icons.calculate, 'Comp. Calculator'),
-                _buildDrawerItem(Icons.map, 'GIS Monitoring'),
-                _buildDrawerItem(Icons.psychology, 'AI Intelligence'),
-                _buildDrawerItem(Icons.view_quilt, 'Command Center'),
-                const Divider(),
-                _buildDrawerItem(Icons.person, 'My Profile'),
-                _buildDrawerItem(Icons.settings, 'System Settings'),
-                _buildDrawerItem(Icons.history, 'Audit Logs'),
-                const Divider(),
-                _buildDrawerItem(Icons.logout, 'Logout', color: Colors.red,
-                    onTap: () {
-                  ref.read(authViewModelProvider.notifier).logout();
-                  context.go('/login');
-                }),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('UTCMS v1.0.0 Alpha',
-                style: TextStyle(color: Colors.grey[500], fontSize: 10)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDrawerHeader() {
-    return Container(
-      padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
-      decoration: const BoxDecoration(
-        color: AppTheme.primaryGreen,
-        image: DecorationImage(
-          image: NetworkImage(
-              'https://placeholder.com/forest_texture'), // In real app use asset
-          fit: BoxFit.cover,
-          opacity: 0.1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.security, color: AppTheme.primaryGreen, size: 30),
-          ),
-          const SizedBox(height: 16),
-          const Text('Uttarakhand State',
-              style: TextStyle(color: Colors.white70, fontSize: 12)),
-          const Text('Executive Admin Portal',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDrawerItem(IconData icon, String title,
-      {bool isActive = false, Color? color, VoidCallback? onTap}) {
-    return ListTile(
-      leading: Icon(icon,
-          color: color ?? (isActive ? AppTheme.primaryGreen : Colors.grey[700]),
-          size: 22),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: color ?? (isActive ? AppTheme.primaryGreen : Colors.grey[800]),
-          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-          fontSize: 14,
-        ),
-      ),
-      dense: true,
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildBottomNav() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: AppTheme.primaryGreen,
-      unselectedItemColor: Colors.grey,
-      showUnselectedLabels: true,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Track'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline), label: 'Apply'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline), label: 'Profile'),
-      ],
     );
   }
 }
