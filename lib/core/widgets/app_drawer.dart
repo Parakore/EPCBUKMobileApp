@@ -83,13 +83,13 @@ class _DrawerHeader extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppTheme.lightGreen.withValues(alpha: 0.2),
+                  color: AppTheme.primaryGreen.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                   border: Border.all(
-                      color: AppTheme.lightGreen.withValues(alpha: 0.4)),
+                      color: AppTheme.primaryGreen.withValues(alpha: 0.4)),
                 ),
                 child: const Icon(Icons.park,
-                    color: AppTheme.lightGreen, size: 22),
+                    color: AppTheme.primaryGreen, size: 22),
               ),
               const SizedBox(width: 12),
               Column(
@@ -106,7 +106,7 @@ class _DrawerHeader extends StatelessWidget {
                   ),
                   Text('v2.5.1',
                       style: TextStyle(
-                        color: AppTheme.lightGreen.withValues(alpha: 0.6),
+                        color: AppTheme.primaryGreen.withValues(alpha: 0.6),
                         fontSize: 11,
                       )),
                 ],
@@ -126,7 +126,7 @@ class _DrawerHeader extends StatelessWidget {
             child: Row(
               children: [
                 const Icon(Icons.shield_outlined,
-                    color: AppTheme.lightGreen, size: 16),
+                    color: AppTheme.primaryGreen, size: 16),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(
@@ -144,7 +144,7 @@ class _DrawerHeader extends StatelessWidget {
                       Text(
                         role.label,
                         style: TextStyle(
-                          color: AppTheme.lightGreen.withValues(alpha: 0.7),
+                          color: AppTheme.primaryGreen.withValues(alpha: 0.7),
                           fontSize: 10,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -173,7 +173,7 @@ class _SectionLabel extends StatelessWidget {
       child: Text(
         label.toUpperCase(),
         style: TextStyle(
-          color: AppTheme.lightGreen.withValues(alpha: 0.5),
+          color: AppTheme.primaryGreen.withValues(alpha: 0.5),
           fontSize: 10,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.2,
@@ -215,14 +215,14 @@ class _NavTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               border: isActive
                   ? Border.all(
-                      color: AppTheme.lightGreen.withValues(alpha: 0.3))
+                      color: AppTheme.primaryGreen.withValues(alpha: 0.3))
                   : null,
             ),
             child: Row(
               children: [
                 Icon(
                   item.icon,
-                  color: isActive ? AppTheme.lightGreen : Colors.white54,
+                  color: isActive ? AppTheme.primaryGreen : Colors.white54,
                   size: 20,
                 ),
                 const SizedBox(width: 12),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'app_button.dart';
 import '../../core/theme/app_theme.dart';
 
 class PlaceholderScreen extends StatelessWidget {
@@ -52,18 +54,12 @@ class PlaceholderScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back),
-              label: const Text('Go Back'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.forestGreen,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+            AppButton(
+              text: 'Go to Dashboard',
+              variant: ButtonVariant.outline,
+              width: 220,
+              icon: const Icon(Icons.home_outlined),
+              onPressed: () => context.go('/home/dashboard'),
             ),
           ],
         ),

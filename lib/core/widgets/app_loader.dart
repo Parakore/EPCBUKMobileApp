@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppLoader extends StatelessWidget {
   final String? message;
+  final bool isDark;
 
-  const AppLoader({super.key, this.message});
+  const AppLoader({super.key, this.message, this.isDark = false});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +12,17 @@ class AppLoader extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(),
+          CircularProgressIndicator(
+            color: isDark ? Colors.white : Theme.of(context).primaryColor,
+          ),
           if (message != null) ...[
             const SizedBox(height: 16),
             Text(
               message!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).primaryColor,
+                    color: isDark
+                        ? Colors.white70
+                        : Theme.of(context).primaryColor,
                   ),
             ),
           ],

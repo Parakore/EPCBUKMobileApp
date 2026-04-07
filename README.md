@@ -38,8 +38,12 @@ lib/
  │   ├── theme/         # Color tokens and Material 3 design system
  │   └── widgets/       # Reusable premium components (AppButton, AppCard, etc.)
  ├── features/          # Independent business modules
- │   ├── auth/          # Splash, Login (Step 1), and OTP (Step 2)
- │   └── dashboard/     # Executive overview, KPI grid, and Charts
+ │   ├── auth/          # Splash, Login, and OTP
+ │   ├── dashboard/     # Executive overview and Charts
+ │   ├── ai_insights/   # [NEW] AI Risk Scoring & Predictive Analytics
+ │   ├── gis_mapping/   # [NEW] GIS Map, Geo-Tagging & Asset Tracking
+ │   ├── valuation/     # [NEW] Automated Compensation Engine
+ │   └── verification/  # [NEW] Approval & Field Verification Queue
  ├── routes/            # GoRouter centralized setup
  ├── providers/         # Global Riverpod provider registrations
  └── main.dart          # App entry point
@@ -94,6 +98,21 @@ The application features dual executive monitoring modes:
 - **Live Monitoring Hub**: Visual indicators for real-time district sync.
 - **Rich Data Visualizations**: Bar and Line Charts for district-wise compensation and afforestation trends.
 - **Performance Indexing**: Survival rates, CO2 sequestration, and SLA compliance metrics.
+
+### 🧠 AI Intelligence Hub
+- **Risk Scoring**: AI-driven project risk assessment (Model: RandomForest/XGBoost logic).
+- **Fraud Detection**: Predictive alerts for potential valuation discrepancies.
+- **Survival Analytics**: ML-based sapling survival prediction based on district terrain.
+
+### 🗺 GIS & Geo-Tagging Module
+- **Interactive Asset Mapping**: Real-time visual tracking of trees and forest land using `flutter_map` (OpenStreetMap).
+- **Precision Geo-Tagging**: Field data collection with high-accuracy GPS coordinates (`geolocator`).
+- **Site Evidence**: Multi-photo evidence capture and preview (`image_picker`).
+
+### ⚖ Valuation & Verification Engine
+- **Automated Valuation**: Instant compensation arithmetic based on species, girth, and land category laws.
+- **Verification Queue**: Streamlined workflow for Range Officers and DFOs to review field data and grant approvals.
+- **Audit Logging**: Every transition in the verification state is tracked for transparency.
 
 ---
 

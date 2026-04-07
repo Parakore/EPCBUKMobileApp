@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
@@ -30,7 +31,11 @@ class DashboardScreen extends ConsumerWidget {
               const SizedBox(height: 24),
               _buildAnalyticsGrid(context, metrics),
               const SizedBox(height: 32),
-              _buildChartsSection(context),
+              _buildMonthlyVolumeSection(context, metrics),
+              const SizedBox(height: 32),
+              _buildDistrictCompensationSection(context, metrics),
+              const SizedBox(height: 32),
+              _buildSpeciesDistributionSection(context, metrics),
               const SizedBox(height: 32),
               _buildAIIntelligenceCenter(context, metrics),
               const SizedBox(height: 32),
@@ -135,8 +140,13 @@ class DashboardScreen extends ConsumerWidget {
             Icons.hourglass_empty, Colors.orange),
         _buildKMICard('SLA Breaches', metrics.slaBreaches.toString(),
             Icons.warning_amber, Colors.red),
-        _buildKMICard('Districts Active', '${metrics.activeDistricts}/13',
-            Icons.map, Colors.teal),
+        _buildKMICard(
+          'Districts Active',
+          '${metrics.activeDistricts}/13',
+          Icons.map,
+          Colors.teal,
+          onTap: () => context.go('/home/gis_map'),
+        ),
         _buildKMICard('Afforestation', '${metrics.afforestationProgress}%',
             Icons.eco, Colors.lightGreen),
         _buildKMICard('Env. Impact Index', metrics.environmentImpactIndex,
@@ -145,97 +155,320 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildKMICard(String label, String value, IconData icon, Color color) {
-    return AppCard(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      color: color.withValues(alpha: 0.03),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(icon, color: color, size: 18),
-              Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+  Widget _buildKMICard(String label, String value, IconData icon, Color color,
+      {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AppCard(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        color: color.withValues(alpha: 0.03),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, color: color, size: 18),
+                Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.trending_up,
+                      color: Colors.green, size: 12),
                 ),
-                child: const Icon(Icons.trending_up,
-                    color: Colors.green, size: 12),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              Text(
-                label,
-                style: TextStyle(color: Colors.grey[600], fontSize: 10),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                Text(
+                  label,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 10),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildChartsSection(BuildContext context) {
+  Widget _buildMonthlyVolumeSection(
+      BuildContext context, DashboardMetrics metrics) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('📊 Performance Analytics',
+        const Text('📈 Monthly Application Volume',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         AppCard(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              const Text('Monthly Application Volume',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildLegendItem('Applications Received', Colors.green[700]!),
+                  const SizedBox(width: 16),
+                  _buildLegendItem('Completed', Colors.orange),
+                ],
+              ),
+              const SizedBox(height: 24),
               SizedBox(
-                height: 180,
-                child: LineChart(
-                  LineChartData(
-                    gridData: const FlGridData(show: false),
-                    titlesData: const FlTitlesData(show: false),
-                    borderData: FlBorderData(show: false),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: const [
-                          FlSpot(0, 31),
-                          FlSpot(2, 42),
-                          FlSpot(4, 38),
-                          FlSpot(6, 45),
-                          FlSpot(8, 52),
-                          FlSpot(10, 48),
-                        ],
-                        isCurved: true,
-                        color: AppTheme.primaryGreen,
-                        barWidth: 3,
-                        belowBarData: BarAreaData(
-                            show: true,
-                            color:
-                                AppTheme.primaryGreen.withValues(alpha: 0.1)),
-                        dotData: const FlDotData(show: false),
+                height: 250,
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceAround,
+                    maxY: 250,
+                    barTouchData: BarTouchData(enabled: true),
+                    titlesData: FlTitlesData(
+                      show: true,
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            if (value.toInt() >= 0 &&
+                                value.toInt() < metrics.monthlyVolume.length) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  metrics.monthlyVolume[value.toInt()].month,
+                                  style: TextStyle(
+                                      color: Colors.grey[600], fontSize: 10),
+                                ),
+                              );
+                            }
+                            return const SizedBox();
+                          },
+                          reservedSize: 28,
+                        ),
                       ),
-                    ],
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: 50,
+                          getTitlesWidget: (value, meta) {
+                            return Text(value.toInt().toString(),
+                                style: TextStyle(
+                                    color: Colors.grey[600], fontSize: 10));
+                          },
+                          reservedSize: 28,
+                        ),
+                      ),
+                      topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                    ),
+                    gridData: FlGridData(
+                      show: true,
+                      drawVerticalLine: false,
+                      getDrawingHorizontalLine: (value) => FlLine(
+                        color: Colors.grey[200],
+                        strokeWidth: 1,
+                      ),
+                    ),
+                    borderData: FlBorderData(show: false),
+                    barGroups:
+                        metrics.monthlyVolume.asMap().entries.map((entry) {
+                      return BarChartGroupData(
+                        x: entry.key,
+                        barRods: [
+                          BarChartRodData(
+                            toY: entry.value.received.toDouble(),
+                            color: Colors.green[700],
+                            width: 8,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            ),
+                          ),
+                          BarChartRodData(
+                            toY: entry.value.completed.toDouble(),
+                            color: Colors.orange,
+                            width: 8,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildDistrictCompensationSection(
+      BuildContext context, DashboardMetrics metrics) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('🏙 Compensation by District (₹ L)',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        AppCard(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: metrics.districtCompensation.asMap().entries.map((entry) {
+              final district = entry.value;
+              final colors = [
+                Colors.green[800]!,
+                Colors.orange[700]!,
+                Colors.blue[800]!,
+                Colors.red[800]!,
+                Colors.purple[800]!,
+                Colors.teal[800]!,
+                Colors.amber[800]!,
+                Colors.green[600]!,
+              ];
+              final maxAmount = metrics.districtCompensation
+                  .map((e) => e.amount)
+                  .reduce((a, b) => a > b ? a : b);
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(district.district,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 13)),
+                        Text('₹${district.amount} L',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 13)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: district.amount / maxAmount,
+                        minHeight: 12,
+                        backgroundColor: colors[entry.key % colors.length]
+                            .withValues(alpha: 0.1),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            colors[entry.key % colors.length]),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSpeciesDistributionSection(
+      BuildContext context, DashboardMetrics metrics) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('🌳 Tree Species Distribution',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        AppCard(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            children: [
+              SizedBox(
+                height: 180,
+                width: 180,
+                child: PieChart(
+                  PieChartData(
+                    sectionsSpace: 2,
+                    centerSpaceRadius: 40,
+                    sections: metrics.speciesDistribution
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                      final colors = [
+                        Colors.green[800]!,
+                        Colors.green[600]!,
+                        Colors.green[400]!,
+                        Colors.lightGreen[400]!,
+                        Colors.teal[400]!,
+                        Colors.blueGrey[400]!,
+                      ];
+                      return PieChartSectionData(
+                        color: colors[entry.key % colors.length],
+                        value: entry.value.percentage,
+                        title: '${entry.value.percentage.toInt()}%',
+                        radius: 50,
+                        titleStyle: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:
+                      metrics.speciesDistribution.asMap().entries.map((entry) {
+                    final colors = [
+                      Colors.green[800]!,
+                      Colors.green[600]!,
+                      Colors.green[400]!,
+                      Colors.lightGreen[400]!,
+                      Colors.teal[400]!,
+                      Colors.blueGrey[400]!,
+                    ];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: _buildLegendItem(entry.value.species,
+                          colors[entry.key % colors.length]),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(label,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
       ],
     );
   }
@@ -247,14 +480,32 @@ class DashboardScreen extends ConsumerWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.psychology, color: Colors.purple, size: 24),
+            const Icon(Icons.auto_awesome, color: Colors.purple, size: 24),
             const SizedBox(width: 8),
             const Text('AI Intelligence Center',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Spacer(),
+            TextButton(
+              onPressed: () => context.go('/home/ai_insights'),
+              child: const Text('View Detailed Analysis →',
+                  style: TextStyle(fontSize: 12, color: Colors.purple)),
+            ),
           ],
         ),
         const SizedBox(height: 16),
-        AppCard(
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.purple.withValues(alpha: 0.1),
+                Colors.blue.withValues(alpha: 0.1),
+              ],
+            ),
+            border: Border.all(color: Colors.purple.withValues(alpha: 0.2)),
+          ),
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
@@ -268,16 +519,31 @@ class DashboardScreen extends ConsumerWidget {
                   'Tree Species ID Accuracy', metrics.speciesIdAccuracy),
               _buildAIMetricRow('Document Authenticity Scan',
                   metrics.documentAuthenticityScan),
-              const Divider(height: 32),
+              const Divider(height: 32, color: Colors.purple),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.purple.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.purple.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.forest, color: Colors.purple, size: 20),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.purple.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.forest_rounded,
+                          color: Colors.purple, size: 20),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -290,7 +556,9 @@ class DashboardScreen extends ConsumerWidget {
                                   color: Colors.purple)),
                           Text(metrics.predictedNextMonthApps,
                               style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w600)),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple)),
                         ],
                       ),
                     ),
@@ -314,7 +582,7 @@ class DashboardScreen extends ConsumerWidget {
             children: [
               Text(label,
                   style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w500)),
+                      fontSize: 12, fontWeight: FontWeight.w600)),
               Text('${percentage.toInt()}%',
                   style: const TextStyle(
                       fontSize: 12,
@@ -323,12 +591,14 @@ class DashboardScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 6),
-          LinearProgressIndicator(
-            value: percentage / 100,
-            backgroundColor: Colors.purple.withValues(alpha: 0.1),
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.purple),
-            minHeight: 4,
+          ClipRRect(
             borderRadius: BorderRadius.circular(2),
+            child: LinearProgressIndicator(
+              value: percentage / 100,
+              backgroundColor: Colors.purple.withValues(alpha: 0.1),
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.purple),
+              minHeight: 6,
+            ),
           ),
         ],
       ),
@@ -441,18 +711,17 @@ class DashboardScreen extends ConsumerWidget {
                           DataCell(Text(activity.district,
                               style: const TextStyle(fontSize: 12))),
                           DataCell(Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(activity.by,
-                                  style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500)),
-                              Text(activity.time,
-                                  style: TextStyle(
-                                      fontSize: 10, color: Colors.grey[600])),
-                            ],
-                          )),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(activity.by,
+                                    style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500)),
+                                Text(activity.time,
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.grey[600])),
+                              ])),
                           DataCell(_buildStatusBadge(activity.status)),
                         ],
                       ))

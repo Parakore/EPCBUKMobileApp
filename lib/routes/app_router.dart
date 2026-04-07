@@ -1,3 +1,4 @@
+import 'package:epcbuk_mobile_app/features/verification/view/verification_queue_screen.dart';
 import 'package:go_router/go_router.dart';
 import '../features/splash/view/splash_view.dart';
 import '../features/auth/view/login_screen.dart';
@@ -6,6 +7,14 @@ import '../features/dashboard/view/dashboard_screen.dart';
 import '../features/dashboard/view/command_center_screen.dart';
 import '../features/home/view/home_shell.dart';
 import '../core/widgets/placeholder_screen.dart';
+import '../features/ai_insights/view/ai_insights_screen.dart';
+import '../features/gis_mapping/view/gis_map_screen.dart';
+import '../features/gis_mapping/view/geo_tagging_screen.dart';
+import '../features/applications/view/applications_screen.dart';
+import '../features/workflow/view/workflow_screen.dart';
+import '../features/valuation/view/valuation_screen.dart';
+import '../features/payments/view/payment_status_screen.dart';
+import '../features/audit/view/audit_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -43,13 +52,11 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/my_applications',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Application Management'),
+          builder: (context, state) => const ApplicationsScreen(),
         ),
         GoRoute(
           path: '/home/payment_status',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Payment & Treasury'),
+          builder: (context, state) => const PaymentStatusScreen(),
         ),
         GoRoute(
           path: '/home/documents',
@@ -68,8 +75,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/geo_tagging',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Geo-Tagging & Field Survey'),
+          builder: (context, state) => const GeoTaggingScreen(),
         ),
         GoRoute(
           path: '/home/tree_enumeration',
@@ -78,28 +84,24 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/gis_map',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'GIS Intelligence Map'),
+          builder: (context, state) => const GISMapScreen(),
         ),
         GoRoute(
           path: '/home/verification_queue',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Verification & Approval Queue'),
+          builder: (context, state) => const VerificationQueueScreen(),
         ),
         GoRoute(
           path: '/home/compensation_calc',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Compensation & Valuation Engine'),
+          builder: (context, state) => const ValuationScreen(),
         ),
         GoRoute(
           path: '/home/ai_insights',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'AI Intelligence Hub'),
+          builder: (context, state) => const AIInsightsScreen(),
         ),
         GoRoute(
           path: '/home/workflow',
           builder: (context, state) =>
-              const PlaceholderScreen(title: 'Workflow Orchestration'),
+              const WorkflowScreen(applicationId: 'TCA-2025-0862'),
         ),
         GoRoute(
           path: '/home/command_center',
@@ -122,8 +124,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/audit',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Audit Logs & Trail'),
+          builder: (context, state) => const AuditScreen(),
         ),
         GoRoute(
           path: '/home/reports',

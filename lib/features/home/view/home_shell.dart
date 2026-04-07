@@ -20,17 +20,33 @@ class HomeShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authViewModelProvider);
     final role = authState.role;
-    
+
     // Determine the title based on the current route
     String title = 'UTCMS';
-    if (location.contains('dashboard')) title = 'Dashboard';
-    else if (location.contains('my_applications')) title = 'Applications';
-    else if (location.contains('new_application')) title = 'New Application';
-    else if (location.contains('verification_queue')) title = 'Verification Queue';
-    else if (location.contains('gis_map')) title = 'GIS Exploration';
-    else if (location.contains('reports')) title = 'Reports & Analytics';
-    else if (location.contains('ai_insights')) title = 'AI Insights';
-    else if (location.contains('profile')) title = 'My Profile';
+    if (location.contains('dashboard'))
+      title = 'Dashboard';
+    else if (location.contains('my_applications'))
+      title = 'Applications';
+    else if (location.contains('new_application'))
+      title = 'New Application';
+    else if (location.contains('workflow'))
+      title = 'Workflow Tracker';
+    else if (location.contains('compensation_calc'))
+      title = 'Valuation Engine';
+    else if (location.contains('payment_status'))
+      title = 'Payment & Treasury';
+    else if (location.contains('audit'))
+      title = 'Audit Log';
+    else if (location.contains('verification_queue'))
+      title = 'Verification Queue';
+    else if (location.contains('gis_map'))
+      title = 'GIS Exploration';
+    else if (location.contains('reports'))
+      title = 'Reports & Analytics';
+    else if (location.contains('ai_insights'))
+      title = 'AI Insights';
+    else if (location.contains('profile'))
+      title = 'My Profile';
     else if (location.contains('settings')) title = 'Settings';
 
     return Scaffold(
@@ -51,7 +67,7 @@ class HomeShell extends ConsumerWidget {
                 role.displayName,
                 style: TextStyle(
                   fontSize: 11,
-                  color: AppTheme.lightGreen.withAlpha(200),
+                  color: AppTheme.primaryGreen.withAlpha(200),
                   fontWeight: FontWeight.w500,
                 ),
               ),

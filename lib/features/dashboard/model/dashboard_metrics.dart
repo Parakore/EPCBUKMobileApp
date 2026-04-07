@@ -16,6 +16,11 @@ class DashboardMetrics {
   final double documentAuthenticityScan;
   final String predictedNextMonthApps;
 
+  // Analytics Data
+  final List<MonthlyVolumeData> monthlyVolume;
+  final List<DistrictCompensationData> districtCompensation;
+  final List<SpeciesDistributionData> speciesDistribution;
+
   // Lists
   final List<SLADepartmentPerformance> slaPerformance;
   final List<RecentActivity> recentActivities;
@@ -35,6 +40,9 @@ class DashboardMetrics {
     required this.speciesIdAccuracy,
     required this.documentAuthenticityScan,
     required this.predictedNextMonthApps,
+    required this.monthlyVolume,
+    required this.districtCompensation,
+    required this.speciesDistribution,
     required this.slaPerformance,
     required this.recentActivities,
   });
@@ -55,6 +63,15 @@ class DashboardMetrics {
       speciesIdAccuracy: (json['species_id_acc'] as num).toDouble(),
       documentAuthenticityScan: (json['doc_authenticity_scan'] as num).toDouble(),
       predictedNextMonthApps: json['predicted_next_month_apps'] as String,
+      monthlyVolume: (json['monthly_volume'] as List)
+          .map((e) => MonthlyVolumeData.fromJson(e))
+          .toList(),
+      districtCompensation: (json['district_compensation'] as List)
+          .map((e) => DistrictCompensationData.fromJson(e))
+          .toList(),
+      speciesDistribution: (json['species_distribution'] as List)
+          .map((e) => SpeciesDistributionData.fromJson(e))
+          .toList(),
       slaPerformance: (json['sla_performance'] as List)
           .map((e) => SLADepartmentPerformance.fromJson(e))
           .toList(),
@@ -80,6 +97,9 @@ class DashboardMetrics {
       'species_id_acc': speciesIdAccuracy,
       'doc_authenticity_scan': documentAuthenticityScan,
       'predicted_next_month_apps': predictedNextMonthApps,
+      'monthly_volume': monthlyVolume.map((e) => e.toJson()).toList(),
+      'district_compensation': districtCompensation.map((e) => e.toJson()).toList(),
+      'species_distribution': speciesDistribution.map((e) => e.toJson()).toList(),
       'sla_performance': slaPerformance.map((e) => e.toJson()).toList(),
       'recent_activities': recentActivities.map((e) => e.toJson()).toList(),
     };
@@ -100,6 +120,9 @@ class DashboardMetrics {
     double? speciesIdAccuracy,
     double? documentAuthenticityScan,
     String? predictedNextMonthApps,
+    List<MonthlyVolumeData>? monthlyVolume,
+    List<DistrictCompensationData>? districtCompensation,
+    List<SpeciesDistributionData>? speciesDistribution,
     List<SLADepartmentPerformance>? slaPerformance,
     List<RecentActivity>? recentActivities,
   }) {
@@ -118,9 +141,88 @@ class DashboardMetrics {
       speciesIdAccuracy: speciesIdAccuracy ?? this.speciesIdAccuracy,
       documentAuthenticityScan: documentAuthenticityScan ?? this.documentAuthenticityScan,
       predictedNextMonthApps: predictedNextMonthApps ?? this.predictedNextMonthApps,
+      monthlyVolume: monthlyVolume ?? this.monthlyVolume,
+      districtCompensation: districtCompensation ?? this.districtCompensation,
+      speciesDistribution: speciesDistribution ?? this.speciesDistribution,
       slaPerformance: slaPerformance ?? this.slaPerformance,
       recentActivities: recentActivities ?? this.recentActivities,
     );
+  }
+}
+
+class MonthlyVolumeData {
+  final String month;
+  final int received;
+  final int completed;
+
+  const MonthlyVolumeData({
+    required this.month,
+    required this.received,
+    required this.completed,
+  });
+
+  factory MonthlyVolumeData.fromJson(Map<String, dynamic> json) {
+    return MonthlyVolumeData(
+      month: json['month'] as String,
+      received: json['received'] as int,
+      completed: json['completed'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'month': month,
+      'received': received,
+      'completed': completed,
+    };
+  }
+}
+
+class DistrictCompensationData {
+  final String district;
+  final double amount; // In Lakhs
+
+  const DistrictCompensationData({
+    required this.district,
+    required this.amount,
+  });
+
+  factory DistrictCompensationData.fromJson(Map<String, dynamic> json) {
+    return DistrictCompensationData(
+      district: json['district'] as String,
+      amount: (json['amount'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'district': district,
+      'amount': amount,
+    };
+  }
+}
+
+class SpeciesDistributionData {
+  final String species;
+  final double percentage;
+
+  const SpeciesDistributionData({
+    required this.species,
+    required this.percentage,
+  });
+
+  factory SpeciesDistributionData.fromJson(Map<String, dynamic> json) {
+    return SpeciesDistributionData(
+      species: json['species'] as String,
+      percentage: (json['percentage'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'species': species,
+      'percentage': percentage,
+    };
   }
 }
 

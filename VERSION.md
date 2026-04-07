@@ -1,5 +1,20 @@
 # VERSION.md - Project Tracking
 
+[0.4.0] - 2026-04-07
+
+### Added
+- [FEATURE] AI Intelligence Hub: Advanced risk scoring and predictive analytics with glassmorphism UI.
+- [FEATURE] GIS Intelligence Map: Real-time asset tracking using OpenStreetMap and marker clustering.
+- [FEATURE] Geo-Tagging & Field Survey: Capture precise coordinates (Geolocator) and site evidence (Image Picker).
+- [FEATURE] Valuation Engine: Automated compensation arithmetic based on Uttarakhand forest land/tree value rules.
+- [FEATURE] Approval & Verification Queue: Centralized workflow for officers to review, approve, or reject field cases.
+- [CORE] `image_picker` and `geolocator` integration for field operations.
+
+### Updated
+- `DashboardScreen`: Integrated live navigation links for GIS, AI, and Valuation modules.
+- `AppRouter`: Registered all new field and intelligence module routes.
+- `Providers`: Centralized all repository and viewmodel providers for new features.
+
 [0.3.0] - 2026-04-06
 
 ### Added

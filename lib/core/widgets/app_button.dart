@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../theme/app_theme.dart';
 
+enum ButtonVariant { primary, outline }
+
 class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -10,6 +12,7 @@ class AppButton extends StatelessWidget {
   final Color? foregroundColor;
   final double? width;
   final Widget? icon;
+  final ButtonVariant variant;
 
   const AppButton({
     super.key,
@@ -20,20 +23,26 @@ class AppButton extends StatelessWidget {
     this.foregroundColor,
     this.width,
     this.icon,
+    this.variant = ButtonVariant.primary,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bool isOutline = variant == ButtonVariant.outline;
+    final Color effectiveBgColor = backgroundColor ?? 
+        (isOutline ? Colors.transparent : AppTheme.forestGreen);
+    final Color effectiveFgColor = foregroundColor ?? 
+        (isOutline ? AppTheme.forestGreen : Colors.white);
+
     return Container(
       width: width ?? double.infinity,
       height: 56,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          if (onPressed != null)
+          if (onPressed != null && !isOutline)
             BoxShadow(
-              color: (backgroundColor ?? AppTheme.forestGreen)
-                  .withValues(alpha: 0.3),
+              color: effectiveBgColor.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -42,22 +51,25 @@ class AppButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppTheme.forestGreen,
-          foregroundColor: foregroundColor ?? Colors.white,
+          backgroundColor: effectiveBgColor,
+          foregroundColor: effectiveFgColor,
           disabledBackgroundColor: Colors.grey[300],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: isOutline 
+                ? BorderSide(color: effectiveFgColor, width: 1.5)
+                : BorderSide.none,
           ),
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 24,
                 width: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Colors.white,
+                  color: effectiveFgColor,
                 ),
               )
             : Row(
