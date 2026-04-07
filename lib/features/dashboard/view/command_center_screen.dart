@@ -11,55 +11,56 @@ class CommandCenterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Executive Command Center'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(dashboardViewModelProvider.notifier).refresh(),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Executive Command Center',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textDark),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () =>
+                    ref.read(dashboardViewModelProvider.notifier).refresh(),
+                child: const Icon(Icons.refresh, color: AppTheme.textDark),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {},
-          ),
+          const SizedBox(height: 12),
+          _buildLiveStatusHeader(context),
+          const SizedBox(height: 24),
+          _buildSectionTitle(context, '🏛 State Overview (Essential KPIs)'),
+          const SizedBox(height: 12),
+          _buildKPIGrid(context, _stateOverviewKPIs),
+          const SizedBox(height: 32),
+          _buildSectionTitle(context, '💰 Financial & Compensation Analytics'),
+          const SizedBox(height: 12),
+          _buildKPIGrid(context, _financialKPIs),
+          const SizedBox(height: 24),
+          _buildFinancialCharts(context),
+          const SizedBox(height: 32),
+          _buildSectionTitle(context, '🌳 Environment & Afforestation'),
+          const SizedBox(height: 12),
+          _buildKPIGrid(context, _environmentKPIs),
+          const SizedBox(height: 24),
+          _buildAfforestationChart(context),
+          const SizedBox(height: 32),
+          _buildSectionTitle(context, '⚙ Operational Efficiency (SLA)'),
+          const SizedBox(height: 12),
+          _buildKPIGrid(context, _operationalKPIs),
+          const SizedBox(height: 32),
+          _buildSectionTitle(context, '⚖ Legal & Compliance Tracking'),
+          const SizedBox(height: 12),
+          _buildKPIGrid(context, _complianceKPIs),
+          const SizedBox(height: 40),
         ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildLiveStatusHeader(context),
-            const SizedBox(height: 24),
-            _buildSectionTitle(context, '🏛 State Overview (Essential KPIs)'),
-            const SizedBox(height: 12),
-            _buildKPIGrid(context, _stateOverviewKPIs),
-            const SizedBox(height: 32),
-            _buildSectionTitle(
-                context, '💰 Financial & Compensation Analytics'),
-            const SizedBox(height: 12),
-            _buildKPIGrid(context, _financialKPIs),
-            const SizedBox(height: 24),
-            _buildFinancialCharts(context),
-            const SizedBox(height: 32),
-            _buildSectionTitle(context, '🌳 Environment & Afforestation'),
-            const SizedBox(height: 12),
-            _buildKPIGrid(context, _environmentKPIs),
-            const SizedBox(height: 24),
-            _buildAfforestationChart(context),
-            const SizedBox(height: 32),
-            _buildSectionTitle(context, '⚙ Operational Efficiency (SLA)'),
-            const SizedBox(height: 12),
-            _buildKPIGrid(context, _operationalKPIs),
-            const SizedBox(height: 32),
-            _buildSectionTitle(context, '⚖ Legal & Compliance Tracking'),
-            const SizedBox(height: 12),
-            _buildKPIGrid(context, _complianceKPIs),
-            const SizedBox(height: 40),
-          ],
-        ),
       ),
     );
   }

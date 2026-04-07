@@ -15,9 +15,9 @@ abstract class AuthRepository {
 }
 
 class AuthRepositoryImpl implements AuthRepository {
-  final Dio _dio;
+  final Dio dio;
 
-  AuthRepositoryImpl(this._dio);
+  AuthRepositoryImpl(this.dio);
 
   @override
   Future<void> sendOtp({
@@ -31,7 +31,7 @@ class AuthRepositoryImpl implements AuthRepository {
     if (userId.isEmpty || password.isEmpty) {
       throw Exception('UserId and Password are required');
     }
-    
+
     // In a real app, we would call an endpoint that sends SMS/Email
     return;
   }

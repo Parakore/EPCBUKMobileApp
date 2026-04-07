@@ -211,7 +211,7 @@ class RoleMenus {
         id: 'compliance_queue',
         icon: Icons.verified_user_outlined,
         label: 'Compliance Queue',
-        route: '/home/verification_queue',
+        route: '/home/compliance',
         badge: '6',
         isAlertBadge: true,
       ),
@@ -399,6 +399,12 @@ class RoleMenus {
         route: '/home/compensation_calc',
       ),
       NavItem.item(
+        id: 'approval_queue',
+        icon: Icons.tag_outlined,
+        label: 'Approval Queue',
+        route: '/home/verification_queue',
+      ),
+      NavItem.item(
         id: 'payment_status',
         icon: Icons.currency_rupee,
         label: 'Payment & Treasury',
@@ -414,7 +420,7 @@ class RoleMenus {
         id: 'compliance_queue',
         icon: Icons.verified_user_outlined,
         label: 'UKPCB Compliance',
-        route: '/home/verification_queue',
+        route: '/home/compliance',
       ),
       NavItem.item(
         id: 'grievance',

@@ -16,16 +16,6 @@ class GISMapScreen extends ConsumerWidget {
     final mapState = ref.watch(gisMapViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('GIS Asset Mapping'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(gisMapViewModelProvider.notifier).refresh(),
-          ),
-        ],
-      ),
       body: mapState.when(
         data: (state) => Stack(
           children: [
@@ -63,11 +53,24 @@ class GISMapScreen extends ConsumerWidget {
           onRetry: () => ref.read(gisMapViewModelProvider.notifier).refresh(),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/home/geo_tagging'),
-        label: const Text('Tag New Tree'),
-        icon: const Icon(Icons.add_location_alt),
-        backgroundColor: AppTheme.primaryGreen,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+              onPressed: () =>
+                  ref.read(gisMapViewModelProvider.notifier).refresh(),
+              label: const Text('Refresh'),
+              icon: const Icon(Icons.refresh)),
+          const SizedBox(height: 12),
+          FloatingActionButton.extended(
+            onPressed: () => context.go('/home/geo_tagging'),
+            label: const Text('Tag New Tree',
+                style: TextStyle(color: Colors.white)),
+            icon: const Icon(Icons.add_location_alt, color: Colors.white),
+            backgroundColor: AppTheme.saffron,
+          ),
+        ],
       ),
     );
   }

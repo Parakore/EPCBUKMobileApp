@@ -14,7 +14,12 @@ import '../features/applications/view/applications_screen.dart';
 import '../features/workflow/view/workflow_screen.dart';
 import '../features/valuation/view/valuation_screen.dart';
 import '../features/payments/view/payment_status_screen.dart';
+import '../features/notifications/view/notification_screen.dart';
 import '../features/audit/view/audit_screen.dart';
+import '../features/applications/view/new_application_screen.dart';
+import '../features/compliance/view/compliance_view.dart';
+import '../features/dms/view/dms_view.dart';
+import '../features/grievance/view/grievance_view.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -47,8 +52,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/new_application',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'New Application Entry'),
+          builder: (context, state) => const NewApplicationScreen(),
         ),
         GoRoute(
           path: '/home/my_applications',
@@ -60,18 +64,19 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/documents',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Document Management (DMS)'),
+          builder: (context, state) => const DMSView(),
         ),
         GoRoute(
           path: '/home/grievance',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Grievance Redressal'),
+          builder: (context, state) => const GrievanceView(),
+        ),
+        GoRoute(
+          path: '/home/compliance',
+          builder: (context, state) => const ComplianceView(),
         ),
         GoRoute(
           path: '/home/notifications',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Notifications Center'),
+          builder: (context, state) => const NotificationScreen(),
         ),
         GoRoute(
           path: '/home/geo_tagging',

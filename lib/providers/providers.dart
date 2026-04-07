@@ -20,6 +20,12 @@ import '../features/valuation/model/valuation_result_model.dart';
 import '../features/verification/repository/verification_repository.dart';
 import '../features/verification/viewmodel/verification_viewmodel.dart';
 import '../features/verification/model/verification_model.dart';
+import '../features/payments/repository/payment_repository.dart';
+import '../features/payments/viewmodel/payment_viewmodel.dart';
+import '../features/payments/model/payment_model.dart';
+import '../features/notifications/repository/notification_repository.dart';
+import '../features/notifications/viewmodel/notification_viewmodel.dart';
+import '../features/notifications/model/notification_model.dart';
 
 // --- Core Providers ---
 final networkClientProvider = Provider((ref) => DioClient());
@@ -108,3 +114,30 @@ final verificationViewModelProvider =
   return VerificationViewModel();
 });
 
+// --- Payment Providers ---
+final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
+  return PaymentRepository();
+});
+
+final paymentViewModelProvider =
+    AsyncNotifierProvider<PaymentViewModel, List<PaymentModel>>(() {
+  return PaymentViewModel();
+});
+
+final paymentSummaryProvider =
+    FutureProvider.autoDispose<PaymentSummary>((ref) async {
+  final repository = ref.watch(paymentRepositoryProvider);
+  return await repository.getPaymentSummary();
+});
+
+
+// --- Notification Providers ---
+final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
+  return NotificationRepository();
+});
+
+final notificationViewModelProvider =
+    StateNotifierProvider<NotificationNotifier, AsyncValue<List<NotificationModel>>>((ref) {
+  final repository = ref.watch(notificationRepositoryProvider);
+  return NotificationNotifier(repository);
+});

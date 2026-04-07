@@ -30,85 +30,69 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
           .identifySpecies(image.path);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final aiState = ref.watch(aiInsightsViewModelProvider);
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text('AI Decision Support System',
-            style: TextStyle(
-                color: AppTheme.textDark, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.textDark),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: AppTheme.textDark),
-            onPressed: () =>
-                ref.read(aiInsightsViewModelProvider.notifier).refresh(),
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          // Background Gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white,
-                  Color(0xFFF5F9F6), // Very light Green-tinted White
-                  Color(0xFFEDF2EE), // Soft transition
-                ],
-              ),
-            ),
-          ),
-
-          SafeArea(
-            child: aiState.when(
-              data: (state) => RefreshIndicator(
-                onRefresh: () =>
-                    ref.read(aiInsightsViewModelProvider.notifier).refresh(),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildNeuralStatusHeader(context),
-                      const SizedBox(height: 24),
-                      _buildKPIGrid(context, state),
-                      const SizedBox(height: 32),
-                      _buildPerformanceDashboard(context, state),
-                      const SizedBox(height: 32),
-                      _buildForecastSection(context, state),
-                      const SizedBox(height: 32),
-                      _buildRiskDistributionSection(context, state),
-                      const SizedBox(height: 32),
-                      _buildPredictionVsActualSection(context, state),
-                      const SizedBox(height: 32),
-                      _buildFraudAlertsSection(context, state),
-                      const SizedBox(height: 32),
-                      _buildSpeciesIdSection(context, state),
-                      const SizedBox(height: 32),
-                      _buildAnalysisHistory(context, state),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
+    return SafeArea(
+      child: aiState.when(
+        data: (state) => RefreshIndicator(
+          onRefresh: () =>
+              ref.read(aiInsightsViewModelProvider.notifier).refresh(),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'AI Intelligence Layer',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textDark),
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () => ref
+                          .read(aiInsightsViewModelProvider.notifier)
+                          .refresh(),
+                      child:
+                          const Icon(Icons.refresh, color: AppTheme.textDark),
+                    ),
+                  ],
                 ),
-              ),
-              loading: () => const AppLoader(
-                  message: 'Initializing Neural Engine...', isDark: false),
-              error: (err, stack) => Center(
-                child: Text('Engine Error: $err',
-                    style: const TextStyle(color: AppTheme.redAlert)),
-              ),
+                const SizedBox(height: 12),
+                _buildNeuralStatusHeader(context),
+                const SizedBox(height: 24),
+                _buildKPIGrid(context, state),
+                const SizedBox(height: 32),
+                _buildPerformanceDashboard(context, state),
+                const SizedBox(height: 32),
+                _buildForecastSection(context, state),
+                const SizedBox(height: 32),
+                _buildRiskDistributionSection(context, state),
+                const SizedBox(height: 32),
+                _buildPredictionVsActualSection(context, state),
+                const SizedBox(height: 32),
+                _buildFraudAlertsSection(context, state),
+                const SizedBox(height: 32),
+                _buildSpeciesIdSection(context, state),
+                const SizedBox(height: 32),
+                _buildAnalysisHistory(context, state),
+                const SizedBox(height: 40),
+              ],
             ),
           ),
-        ],
+        ),
+        loading: () => const AppLoader(
+            message: 'Initializing Neural Engine...', isDark: false),
+        error: (err, stack) => Center(
+          child: Text('Engine Error: $err',
+              style: const TextStyle(color: AppTheme.redAlert)),
+        ),
       ),
     );
   }
@@ -299,6 +283,7 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
       ],
     ).animate().fadeIn(delay: 300.ms);
   }
+
   Widget _buildForecastSection(BuildContext context, AIInsightsState state) {
     return Row(
       children: [
@@ -469,7 +454,8 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
                 Expanded(
                   child: AppButton(
                     text: 'New Scan',
-                    icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
+                    icon:
+                        const Icon(Icons.qr_code_scanner, color: Colors.white),
                     onPressed: () => _pickImage(ImageSource.camera),
                   ),
                 ),
@@ -478,7 +464,8 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
                   child: AppButton(
                     text: 'Library',
                     variant: ButtonVariant.outline,
-                    icon: const Icon(Icons.add_photo_alternate_outlined, color: AppTheme.forestGreen),
+                    icon: const Icon(Icons.add_photo_alternate_outlined,
+                        color: AppTheme.forestGreen),
                     onPressed: () => _pickImage(ImageSource.gallery),
                   ),
                 ),
@@ -534,7 +521,8 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
         AppButton(
           text: 'Reset Scanner',
           variant: ButtonVariant.outline,
-          onPressed: () => ref.read(aiInsightsViewModelProvider.notifier).refresh(),
+          onPressed: () =>
+              ref.read(aiInsightsViewModelProvider.notifier).refresh(),
         ),
       ],
     );
@@ -573,7 +561,8 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: state.riskDistribution.entries.map((e) {
-                    return _buildLegendItem(e.key, _getRiskDistributionColor(e.key));
+                    return _buildLegendItem(
+                        e.key, _getRiskDistributionColor(e.key));
                   }).toList(),
                 ),
               ),
@@ -649,23 +638,43 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
                 titlesData: FlTitlesData(
                   show: true,
                   bottomTitles: AxisTitles(
-                    axisNameWidget: const Text('Predicted (₹ 000)', style: TextStyle(fontSize: 10, color: AppTheme.textMid)),
-                    sideTitles: SideTitles(showTitles: true, interval: 20, getTitlesWidget: (v, m) => Text(v.toInt().toString(), style: const TextStyle(fontSize: 9, color: AppTheme.textLight))),
+                    axisNameWidget: const Text('Predicted (₹ 000)',
+                        style:
+                            TextStyle(fontSize: 10, color: AppTheme.textMid)),
+                    sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 20,
+                        getTitlesWidget: (v, m) => Text(v.toInt().toString(),
+                            style: const TextStyle(
+                                fontSize: 9, color: AppTheme.textLight))),
                   ),
                   leftTitles: AxisTitles(
-                    axisNameWidget: const Text('Actual (₹ 000)', style: TextStyle(fontSize: 10, color: AppTheme.textMid)),
-                    sideTitles: SideTitles(showTitles: true, interval: 20, getTitlesWidget: (v, m) => Text(v.toInt().toString(), style: const TextStyle(fontSize: 9, color: AppTheme.textLight))),
+                    axisNameWidget: const Text('Actual (₹ 000)',
+                        style:
+                            TextStyle(fontSize: 10, color: AppTheme.textMid)),
+                    sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 20,
+                        getTitlesWidget: (v, m) => Text(v.toInt().toString(),
+                            style: const TextStyle(
+                                fontSize: 9, color: AppTheme.textLight))),
                   ),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
                 ),
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: true,
                   horizontalInterval: 20,
                   verticalInterval: 20,
-                  getDrawingHorizontalLine: (value) => FlLine(color: AppTheme.textLight.withValues(alpha: 0.1), strokeWidth: 1),
-                  getDrawingVerticalLine: (value) => FlLine(color: AppTheme.textLight.withValues(alpha: 0.1), strokeWidth: 1),
+                  getDrawingHorizontalLine: (value) => FlLine(
+                      color: AppTheme.textLight.withValues(alpha: 0.1),
+                      strokeWidth: 1),
+                  getDrawingVerticalLine: (value) => FlLine(
+                      color: AppTheme.textLight.withValues(alpha: 0.1),
+                      strokeWidth: 1),
                 ),
                 borderData: FlBorderData(show: false),
               ),

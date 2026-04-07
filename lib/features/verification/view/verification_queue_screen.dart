@@ -15,16 +15,6 @@ class VerificationQueueScreen extends ConsumerWidget {
     final queueState = ref.watch(verificationViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Application Approval Queue'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(verificationViewModelProvider.notifier).refresh(),
-          ),
-        ],
-      ),
       body: queueState.when(
         data: (items) => _buildQueue(context, ref, items),
         loading: () => const AppLoader(message: 'Loading pending cases...'),
@@ -44,12 +34,43 @@ class VerificationQueueScreen extends ConsumerWidget {
           child: Text('All caught up! No pending applications.'));
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return _VerificationCard(item: items[index]);
-      },
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Text(
+                'Application Approval Queue',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.greenDark.withValues(alpha: 0.8),
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () =>
+                    ref.read(verificationViewModelProvider.notifier).refresh(),
+                child: const Icon(Icons.refresh),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.8,
+          width: MediaQuery.of(context).size.width,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return _VerificationCard(item: items[index]);
+            },
+          ),
+        ),
+      ],
     );
   }
 }

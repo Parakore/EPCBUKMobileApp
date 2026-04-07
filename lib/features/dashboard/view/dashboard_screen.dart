@@ -484,13 +484,12 @@ class DashboardScreen extends ConsumerWidget {
             const SizedBox(width: 8),
             const Text('AI Intelligence Center',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const Spacer(),
-            TextButton(
-              onPressed: () => context.go('/home/ai_insights'),
-              child: const Text('View Detailed Analysis →',
-                  style: TextStyle(fontSize: 12, color: Colors.purple)),
-            ),
           ],
+        ),
+        GestureDetector(
+          onTap: () => context.go('/home/ai_insights'),
+          child: const Text('View Detailed Analysis →',
+              style: TextStyle(fontSize: 12, color: Colors.purple)),
         ),
         const SizedBox(height: 16),
         Container(
@@ -680,7 +679,8 @@ class DashboardScreen extends ConsumerWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               headingRowHeight: 40,
-              dataRowHeight: 56,
+              dataRowMinHeight: 48,
+              dataRowMaxHeight: 56,
               columnSpacing: 24,
               columns: const [
                 DataColumn(

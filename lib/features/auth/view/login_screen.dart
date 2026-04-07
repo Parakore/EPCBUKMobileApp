@@ -119,7 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                     // Role Selection
                     DropdownButtonFormField<UserRole>(
-                      value: _selectedRole,
+                      initialValue: _selectedRole,
                       decoration: InputDecoration(
                         labelText: 'Select User Role',
                         prefixIcon: const Icon(Icons.person_pin_outlined),

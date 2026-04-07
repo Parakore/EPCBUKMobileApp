@@ -53,6 +53,11 @@ class ValuationViewModel extends StateNotifier<ValuationState> {
     calculate();
   }
 
+  void updateNumTrees(int val) {
+    state = state.copyWith(numTrees: val);
+    calculate();
+  }
+
   void calculate() {
     // 📐 Volume = (GBH² / 4π) × Height
     // GBH in cm -> girth in m
@@ -62,7 +67,7 @@ class ValuationViewModel extends StateNotifier<ValuationState> {
     // 💰 Timber Value = Volume × Market Rate
     final timberValue = volume * state.marketRate;
 
-    // 🌿 Age Factor = 1 + (Age / 100)
+    // 🌿 Age Factor = 1 + (state.age / 100)
     final ageFactor = 1 + (state.age / 100);
 
     // 🌿 Env Cost = Base Rate × Age Factor × Eco Factor × Location Factor
@@ -71,15 +76,15 @@ class ValuationViewModel extends StateNotifier<ValuationState> {
                     state.species.ecoFactor * 
                     state.location.value;
 
-    // 🌳 NPV = Base Rate × Age Factor × 2.0 × Location Factor
-    final npv = ValuationRepository.baseRate * ageFactor * 2.0 * state.location.value;
+    // 🌳 NPV = Std Rate (Base Rate) × Age Multiplier (Age Factor) × Location Factor
+    final npv = ValuationRepository.baseRate * ageFactor * state.location.value * 2.0;
 
     // 🌱 Afforestation = Timber Value × 0.30
     final afforestation = timberValue * 0.30;
 
     // 🏆 Total = (Timber + Env + NPV + Afforestation) × NumTrees
-    final baseTotal = timberValue + envCost + npv + afforestation;
-    final total = baseTotal * state.numTrees;
+    final baseTotalPerTree = timberValue + envCost + npv + afforestation;
+    final total = baseTotalPerTree * state.numTrees;
 
     state = state.copyWith(
       volume: volume,

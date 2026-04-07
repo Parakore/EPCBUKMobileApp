@@ -16,13 +16,23 @@ class ValuationScreen extends ConsumerWidget {
     final viewModel = ref.read(valuationProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tree Valuation Engine'),
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            Row(
+              children: [
+                Text(
+                  'Tree Valuation Engine',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.greenDark.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
             // Parameter Input Card
             GlassCard(
               title: 'Tree Parameters',
@@ -75,13 +85,37 @@ class ValuationScreen extends ConsumerWidget {
                       const SizedBox(width: 16),
                       Expanded(
                         child: _DropdownRow<LocationFactor>(
-                          label: 'Location',
+                          label: 'Location Sensitivity',
                           value: state.location,
                           items: LocationFactor.values.map((l) {
                             return DropdownMenuItem(
                                 value: l, child: Text(l.label));
                           }).toList(),
                           onChanged: (val) => viewModel.updateLocation(val!),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                          labelText: 'Market Rate (₹/m³)',
+                          hintText: 'e.g. 32000',
+                          keyboardType: TextInputType.number,
+                          onChanged: (val) => viewModel
+                              .updateMarketRate(double.tryParse(val) ?? 0),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: AppTextField(
+                          labelText: 'Number of Trees',
+                          hintText: 'e.g. 1',
+                          keyboardType: TextInputType.number,
+                          onChanged: (val) =>
+                              viewModel.updateNumTrees(int.tryParse(val) ?? 1),
                         ),
                       ),
                     ],
@@ -108,13 +142,20 @@ class ValuationScreen extends ConsumerWidget {
                   Text('📐 Embedded Formula Engine',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: 14,
                           color: AppTheme.greenDark)),
-                  const SizedBox(height: 8),
-                  const Text('Volume = (GBH² / 4π) × Height',
-                      style: TextStyle(fontSize: 11, fontFamily: 'monospace')),
-                  const Text('Total = Timber + Env + NPV + Afforestation',
-                      style: TextStyle(fontSize: 11, fontFamily: 'monospace')),
+                  const SizedBox(height: 12),
+                  const _FormulaText('📐 Volume = (GBH² / 4π) × Height'),
+                  const _FormulaText('💰 Timber Value = Volume × Market Rate'),
+                  const _FormulaText(
+                      '🌿 Env Cost = Base Rate × Age Factor × Eco Factor'),
+                  const _FormulaText(
+                      '🌳 NPV = Std Rate × Age Multiplier × Location Factor'),
+                  const _FormulaText('🌱 Afforestation = Timber Value × 0.30'),
+                  const Divider(height: 16, color: AppTheme.greenMid),
+                  const _FormulaText(
+                      '🏆 Total = Timber + Env + NPV + Afforestation',
+                      isBold: true),
                 ],
               ),
             ),
@@ -272,6 +313,29 @@ class _ResultLine extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w600)),
         ],
+      ),
+    );
+  }
+}
+
+class _FormulaText extends StatelessWidget {
+  final String text;
+  final bool isBold;
+
+  const _FormulaText(this.text, {this.isBold = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          fontFamily: 'monospace',
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          color: isBold ? AppTheme.greenDark : Colors.black87,
+        ),
       ),
     );
   }

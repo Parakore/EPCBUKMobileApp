@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -15,15 +16,6 @@ class ApplicationsScreen extends ConsumerWidget {
     final viewModel = ref.read(applicationsViewModelProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Applications Management'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.file_download_outlined),
-            onPressed: () {},
-          ),
-        ],
-      ),
       body: Column(
         children: [
           // Search & Filter Bar
@@ -32,11 +24,31 @@ class ApplicationsScreen extends ConsumerWidget {
             color: AppTheme.greenDark.withValues(alpha: 0.05),
             child: Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Applications Management',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.greenDark.withValues(alpha: 0.8),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => {},
+                      child: Icon(Icons.file_download_outlined,
+                          color: AppTheme.greenDark),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 TextField(
                   onChanged: viewModel.updateSearch,
                   decoration: InputDecoration(
                     hintText: 'Search by ID / Name',
-                    prefixIcon: const Icon(Icons.search, color: AppTheme.greenMid),
+                    prefixIcon:
+                        const Icon(Icons.search, color: AppTheme.greenMid),
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -79,10 +91,11 @@ class ApplicationsScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        backgroundColor: AppTheme.greenMid,
-        label: const Text('New Application'),
-        icon: const Icon(Icons.add),
+        onPressed: () => context.push('/home/new_application'),
+        backgroundColor: AppTheme.saffron,
+        label: const Text('New Application',
+            style: TextStyle(color: Colors.white)),
+        icon: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -143,13 +156,27 @@ class _ApplicationCard extends StatelessWidget {
               ],
             ),
             const Divider(height: 24),
-            _InfoRow(icon: Icons.person_outline, label: 'Applicant', value: app.applicant),
+            _InfoRow(
+                icon: Icons.person_outline,
+                label: 'Applicant',
+                value: app.applicant),
             const SizedBox(height: 8),
-            _InfoRow(icon: Icons.location_on_outlined, label: 'District', value: app.district),
+            _InfoRow(
+                icon: Icons.location_on_outlined,
+                label: 'District',
+                value: app.district),
             const SizedBox(height: 8),
-            _InfoRow(icon: Icons.park_outlined, label: 'Tree Count', value: '${app.treeCount} Trees'),
+            _InfoRow(
+                icon: Icons.park_outlined,
+                label: 'Tree Count',
+                value: '${app.treeCount} Trees'),
             const SizedBox(height: 8),
-            _InfoRow(icon: Icons.payments_outlined, label: 'Compensation', value: app.compensation, isBold: true, valueColor: AppTheme.greenMid),
+            _InfoRow(
+                icon: Icons.payments_outlined,
+                label: 'Compensation',
+                value: app.compensation,
+                isBold: true,
+                valueColor: AppTheme.greenMid),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,7 +184,9 @@ class _ApplicationCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Current Stage', style: TextStyle(fontSize: 10, color: AppTheme.textLight)),
+                    Text('Current Stage',
+                        style:
+                            TextStyle(fontSize: 10, color: AppTheme.textLight)),
                     const SizedBox(height: 4),
                     AppBadge(label: app.stage, type: app.stageClass),
                   ],
@@ -169,7 +198,8 @@ class _ApplicationCard extends StatelessWidget {
                     minimumSize: const Size(100, 36),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
-                  child: const Text('View Details', style: TextStyle(fontSize: 12)),
+                  child: const Text('View Details',
+                      style: TextStyle(fontSize: 12)),
                 ),
               ],
             ),
@@ -201,7 +231,8 @@ class _InfoRow extends StatelessWidget {
       children: [
         Icon(icon, size: 16, color: AppTheme.textLight),
         const SizedBox(width: 8),
-        Text('$label:', style: TextStyle(fontSize: 12, color: AppTheme.textLight)),
+        Text('$label:',
+            style: TextStyle(fontSize: 12, color: AppTheme.textLight)),
         const SizedBox(width: 4),
         Text(
           value,

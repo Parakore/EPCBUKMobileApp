@@ -10,34 +10,77 @@ class WorkflowScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stages = [
-      WorkflowStage(title: 'Submitted', role: 'Citizen', icon: Icons.person_outline, status: WorkflowStatus.completed),
-      WorkflowStage(title: 'Field Survey', role: 'Forest Guard', icon: Icons.park_outlined, status: WorkflowStatus.completed),
-      WorkflowStage(title: 'Verification', role: 'Range Officer', icon: Icons.check_circle_outline, status: WorkflowStatus.active),
-      WorkflowStage(title: 'Valuation', role: 'DFO', icon: Icons.calculate_outlined, status: WorkflowStatus.pending),
-      WorkflowStage(title: 'UKPCB Review', role: 'PCB Priya', icon: Icons.eco_outlined, status: WorkflowStatus.pending),
-      WorkflowStage(title: 'DM Approval', role: 'DM Anand', icon: Icons.gavel_outlined, status: WorkflowStatus.pending),
-      WorkflowStage(title: 'Payment', role: 'Treasury', icon: Icons.payments_outlined, status: WorkflowStatus.pending),
-      WorkflowStage(title: 'Completed', role: 'System', icon: Icons.verified_user_outlined, status: WorkflowStatus.pending),
+      WorkflowStage(
+          title: 'Submitted',
+          role: 'Citizen',
+          icon: Icons.person_outline,
+          status: WorkflowStatus.completed),
+      WorkflowStage(
+          title: 'Field Survey',
+          role: 'Forest Guard',
+          icon: Icons.park_outlined,
+          status: WorkflowStatus.completed),
+      WorkflowStage(
+          title: 'Verification',
+          role: 'Range Officer',
+          icon: Icons.check_circle_outline,
+          status: WorkflowStatus.active),
+      WorkflowStage(
+          title: 'Valuation',
+          role: 'DFO',
+          icon: Icons.calculate_outlined,
+          status: WorkflowStatus.pending),
+      WorkflowStage(
+          title: 'UKPCB Review',
+          role: 'PCB Priya',
+          icon: Icons.eco_outlined,
+          status: WorkflowStatus.pending),
+      WorkflowStage(
+          title: 'DM Approval',
+          role: 'DM Anand',
+          icon: Icons.gavel_outlined,
+          status: WorkflowStatus.pending),
+      WorkflowStage(
+          title: 'Payment',
+          role: 'Treasury',
+          icon: Icons.payments_outlined,
+          status: WorkflowStatus.pending),
+      WorkflowStage(
+          title: 'Completed',
+          role: 'System',
+          icon: Icons.verified_user_outlined,
+          status: WorkflowStatus.pending),
     ];
 
     final history = [
-      TimelineEntry(title: 'Application Submitted', subtitle: 'Submitted online via UTCMS portal', date: '29 Mar 2025'),
-      TimelineEntry(title: 'Forest Guard Assigned', subtitle: 'FG Suresh Rawat – Beat B-12, Dehradun', date: '30 Mar 2025'),
-      TimelineEntry(title: 'Field Survey Completed', subtitle: 'Tree enumeration and geo-tagging done', date: '01 Apr 2025', color: AppTheme.greenMid),
-      TimelineEntry(title: 'Awaiting Verification', subtitle: 'Pending with Range Officer Dinesh', date: 'Today', color: AppTheme.gold),
+      TimelineEntry(
+          title: 'Application Submitted',
+          subtitle: 'Submitted online via UTCMS portal',
+          date: '29 Mar 2025'),
+      TimelineEntry(
+          title: 'Forest Guard Assigned',
+          subtitle: 'FG Suresh Rawat – Beat B-12, Dehradun',
+          date: '30 Mar 2025'),
+      TimelineEntry(
+          title: 'Field Survey Completed',
+          subtitle: 'Tree enumeration and geo-tagging done',
+          date: '01 Apr 2025',
+          color: AppTheme.greenMid),
+      TimelineEntry(
+          title: 'Awaiting Verification',
+          subtitle: 'Pending with Range Officer Dinesh',
+          date: 'Today',
+          color: AppTheme.gold),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Workflow Tracker – $applicationId'),
-      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Stepper Header
             Container(
-              height: 120,
+              height: 100,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -47,7 +90,8 @@ class WorkflowScreen extends StatelessWidget {
               ),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 itemCount: stages.length,
                 itemBuilder: (context, index) {
                   return _WorkflowStep(stage: stages[index], index: index + 1);
@@ -107,7 +151,9 @@ class _WorkflowStep extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isCompleted ? Colors.white : (isActive ? AppTheme.gold : Colors.white12),
+              color: isCompleted
+                  ? Colors.white
+                  : (isActive ? AppTheme.gold : Colors.white12),
             ),
             child: Icon(
               isCompleted ? Icons.check : stage.icon,
@@ -179,11 +225,13 @@ class _TimelineItem extends StatelessWidget {
                     children: [
                       Text(
                         entry.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       Text(
                         entry.date,
-                        style: TextStyle(fontSize: 10, color: AppTheme.textLight),
+                        style:
+                            TextStyle(fontSize: 10, color: AppTheme.textLight),
                       ),
                     ],
                   ),
