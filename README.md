@@ -99,6 +99,12 @@ The application features dual executive monitoring modes:
 - **Rich Data Visualizations**: Bar and Line Charts for district-wise compensation and afforestation trends.
 - **Performance Indexing**: Survival rates, CO2 sequestration, and SLA compliance metrics.
 
+### 📊 Enhanced High-Fidelity Analytics
+- **12-Month Historical Tracking**: Deep-dive analytics for monthly application volume, tree felling vs planting, and CAMPA funds.
+- **Grouped Comparison Charts**: Unified views for correlating disparate metrics (e.g., Tree Cut vs Tree Planted).
+- **Interactive Trend Lines**: Trend analysis with area-mapped visualizations for environmental impact and compensation averages.
+- **Financial Payment Flow**: Treasury-integrated tracking of released vs pending compensation payments.
+
 ### 🧠 AI Intelligence Hub
 - **Risk Scoring**: AI-driven project risk assessment (Model: RandomForest/XGBoost logic).
 - **Fraud Detection**: Predictive alerts for potential valuation discrepancies.

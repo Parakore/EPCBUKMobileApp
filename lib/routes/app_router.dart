@@ -20,6 +20,9 @@ import '../features/applications/view/new_application_screen.dart';
 import '../features/compliance/view/compliance_view.dart';
 import '../features/dms/view/dms_view.dart';
 import '../features/grievance/view/grievance_view.dart';
+import '../features/reports/view/reports_screen.dart';
+import '../features/user_mgmt/view/user_mgmt_screen.dart';
+import '../features/settings/view/settings_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -114,8 +117,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/user_mgmt',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'User & Role Management'),
+          builder: (context, state) => const UserMgmtScreen(),
         ),
         GoRoute(
           path: '/home/profile',
@@ -124,8 +126,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/settings',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'System Configuration'),
+          builder: (context, state) => const SettingsScreen(),
         ),
         GoRoute(
           path: '/home/audit',
@@ -133,8 +134,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/home/reports',
-          builder: (context, state) =>
-              const PlaceholderScreen(title: 'Reports & Analytics Dashboard'),
+          builder: (context, state) => const ReportsScreen(),
         ),
       ],
     ),

@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_badge.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/glass_card.dart';
-import '../viewmodel/audit_viewmodel.dart';
-import '../model/audit_model.dart';
+import '../viewmodel/user_viewmodel.dart';
+import '../model/user_mgmt_model.dart';
 
-class AuditScreen extends ConsumerWidget {
-  const AuditScreen({super.key});
+class UserMgmtScreen extends ConsumerWidget {
+  const UserMgmtScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(auditViewModelProvider);
-    final viewModel = ref.read(auditViewModelProvider.notifier);
+    final state = ref.watch(userViewModelProvider);
+    final viewModel = ref.read(userViewModelProvider.notifier);
 
     return Scaffold(
       body: Column(
@@ -28,7 +29,7 @@ class AuditScreen extends ConsumerWidget {
             child: Row(
               children: [
                 Text(
-                  'System Audit Trail',
+                  'User Management',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -41,8 +42,8 @@ class AuditScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: AppTextField(
-              labelText: 'Search Logs',
-              hintText: 'Search by user, action or ID...',
+              labelText: 'Search Users',
+              hintText: 'Search by name, role or district...',
               prefixIcon: const Icon(Icons.search),
               onChanged: viewModel.setSearchQuery,
             ),
@@ -53,29 +54,34 @@ class AuditScreen extends ConsumerWidget {
                 : state.error != null
                     ? AppErrorWidget(
                         message: state.error!,
-                        onRetry: () => viewModel.loadLogs(),
+                        onRetry: () => viewModel.loadUsers(),
                       )
-                    : state.filteredLogs.isEmpty
-                        ? const Center(child: Text('No logs found'))
+                    : state.filteredUsers.isEmpty
+                        ? const Center(child: Text('No users found'))
                         : ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: state.filteredLogs.length,
+                            itemCount: state.filteredUsers.length,
                             itemBuilder: (context, index) {
-                              final log = state.filteredLogs[index];
-                              return _AuditCard(log: log);
+                              final userMgmt = state.filteredUsers[index];
+                              return _UserCard(userMgmt: userMgmt);
                             },
                           ),
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: AppTheme.primaryGreen,
+        child: const Icon(Icons.person_add, color: Colors.white),
+      ),
     );
   }
 }
 
-class _AuditCard extends StatelessWidget {
-  final AuditModel log;
+class _UserCard extends StatelessWidget {
+  final UserMgmtModel userMgmt;
 
-  const _AuditCard({required this.log});
+  const _UserCard({required this.userMgmt});
 
   @override
   Widget build(BuildContext context) {
@@ -90,58 +96,52 @@ class _AuditCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    log.action,
+                    userMgmt.user.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 16,
                     ),
                   ),
                 ),
                 AppBadge(
-                  label: log.status,
-                  type: log.status == 'Success'
+                  label: userMgmt.status,
+                  type: userMgmt.status == 'Active'
                       ? BadgeType.success
-                      : log.status == 'Alert'
-                          ? BadgeType.warning
-                          : BadgeType.danger,
+                      : BadgeType.warning,
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.person, size: 12, color: Colors.grey[400]),
-                const SizedBox(width: 4),
-                Text(
-                  '${log.user} (${log.role})',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                ),
-              ],
+            Text(
+              userMgmt.user.email,
+              style: TextStyle(fontSize: 13, color: Colors.grey[600]),
             ),
             const Divider(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _DetailRow(label: 'Timestamp', value: log.timestamp),
-                if (log.caseId != null)
-                  _DetailRow(label: 'Case ID', value: log.caseId!),
+                _InfoTile(label: 'Role', value: userMgmt.user.role),
+                _InfoTile(label: 'District', value: userMgmt.district),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _DetailRow(label: 'IP Address', value: log.ipAddress),
-                TextButton(
+                Text(
+                  'Last Login: ${userMgmt.lastLogin}',
+                  style: TextStyle(fontSize: 11, color: Colors.grey[400]),
+                ),
+                TextButton.icon(
                   onPressed: () {},
+                  icon: const Icon(Icons.edit, size: 14),
+                  label: const Text('Edit', style: TextStyle(fontSize: 12)),
                   style: TextButton.styleFrom(
                     foregroundColor: AppTheme.primaryGreen,
                     padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child:
-                      const Text('View JSON', style: TextStyle(fontSize: 11)),
                 ),
               ],
             ),
@@ -152,11 +152,11 @@ class _AuditCard extends StatelessWidget {
   }
 }
 
-class _DetailRow extends StatelessWidget {
+class _InfoTile extends StatelessWidget {
   final String label;
   final String value;
 
-  const _DetailRow({required this.label, required this.value});
+  const _InfoTile({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -165,12 +165,12 @@ class _DetailRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 9, color: Colors.grey[500]),
+          style: TextStyle(fontSize: 10, color: Colors.grey[500]),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
         ),
       ],
     );

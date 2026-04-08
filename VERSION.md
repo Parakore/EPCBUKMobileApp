@@ -1,5 +1,17 @@
 # VERSION.md - Project Tracking
 
+[0.5.0] - 2026-04-08
+
+### Added
+- [FEATURE] Enhanced High-Fidelity Analytics: 12-month trend tracking across all modules (Env, Financial, Ops).
+- [FEATURE] Multi-Metric Correlation Charts: Grouped visualizations for Trees Cut vs Planted and CAMPA Fund matching.
+- [FEATURE] Financial Payment Flow: Real-time visualization of Treasury released vs pending payments.
+- [UI] Reusable Monthly Chart Components: Optimized `fl_chart` integration for government-grade aesthetics.
+
+### Updated
+- `ReportsRepository`: Implemented 12-month historical data generation for realistic state-wide reporting.
+- `ReportsScreen`: Full UI refactor to support interactive high-fidelity month-over-month analysis.
+
 [0.4.0] - 2026-04-07
 
 ### Added

@@ -5,6 +5,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final Widget? leading;
   final bool centerTitle;
+  final PreferredSizeWidget? bottom;
 
   const AppAppBar({
     super.key,
@@ -12,6 +13,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.centerTitle = true,
+    this.bottom,
   });
 
   @override
@@ -27,11 +29,13 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions,
       leading: leading,
       centerTitle: centerTitle,
+      bottom: bottom,
       elevation: 4,
       shadowColor: Theme.of(context).shadowColor,
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0.0));
 }
