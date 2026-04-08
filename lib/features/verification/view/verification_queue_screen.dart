@@ -14,15 +14,13 @@ class VerificationQueueScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final queueState = ref.watch(verificationViewModelProvider);
 
-    return Scaffold(
-      body: queueState.when(
-        data: (items) => _buildQueue(context, ref, items),
-        loading: () => const AppLoader(message: 'Loading pending cases...'),
-        error: (err, stack) => AppErrorWidget(
-          message: err.toString(),
-          onRetry: () =>
-              ref.read(verificationViewModelProvider.notifier).refresh(),
-        ),
+    return queueState.when(
+      data: (items) => _buildQueue(context, ref, items),
+      loading: () => const AppLoader(message: 'Loading pending cases...'),
+      error: (err, stack) => AppErrorWidget(
+        message: err.toString(),
+        onRetry: () =>
+            ref.read(verificationViewModelProvider.notifier).refresh(),
       ),
     );
   }
@@ -34,43 +32,16 @@ class VerificationQueueScreen extends ConsumerWidget {
           child: Text('All caught up! No pending applications.'));
     }
 
-    return Column(
-      children: [
-        const SizedBox(height: 12),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Text(
-                'Application Approval Queue',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.greenDark.withValues(alpha: 0.8),
-                ),
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () =>
-                    ref.read(verificationViewModelProvider.notifier).refresh(),
-                child: const Icon(Icons.refresh),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.8,
-          width: MediaQuery.of(context).size.width,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return _VerificationCard(item: items[index]);
-            },
-          ),
-        ),
-      ],
+    return RefreshIndicator(
+      onRefresh: () =>
+          ref.read(verificationViewModelProvider.notifier).refresh(),
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return _VerificationCard(item: items[index]);
+        },
+      ),
     );
   }
 }

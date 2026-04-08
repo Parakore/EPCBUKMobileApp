@@ -49,25 +49,6 @@ class PaymentStatusScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Payment Analytics',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.greenDark.withValues(alpha: 0.8),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () =>
-                      ref.read(paymentViewModelProvider.notifier).refresh(),
-                  child: Icon(Icons.refresh, color: AppTheme.greenDark),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
             // KPI Grid
             GridView.count(
               crossAxisCount: 2,

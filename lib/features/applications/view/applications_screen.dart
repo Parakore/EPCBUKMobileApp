@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/glass_card.dart';
@@ -15,88 +14,60 @@ class ApplicationsScreen extends ConsumerWidget {
     final state = ref.watch(applicationsViewModelProvider);
     final viewModel = ref.read(applicationsViewModelProvider.notifier);
 
-    return Scaffold(
-      body: Column(
-        children: [
-          // Search & Filter Bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: AppTheme.greenDark.withValues(alpha: 0.05),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      children: [
+        // Search & Filter Bar
+        Container(
+          padding: const EdgeInsets.all(16),
+          color: AppTheme.greenDark.withValues(alpha: 0.05),
+          child: Column(
+            children: [
+              TextField(
+                onChanged: viewModel.updateSearch,
+                decoration: InputDecoration(
+                  hintText: 'Search by ID / Name',
+                  prefixIcon:
+                      const Icon(Icons.search, color: AppTheme.greenMid),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: [
-                    Text(
-                      'Applications Management',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.greenDark.withValues(alpha: 0.8),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => {},
-                      child: Icon(Icons.file_download_outlined,
-                          color: AppTheme.greenDark),
-                    ),
+                    _FilterChip(label: 'All Districts', selected: true),
+                    _FilterChip(label: 'Dehradun'),
+                    _FilterChip(label: 'Haridwar'),
+                    _FilterChip(label: 'Tehri'),
                   ],
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  onChanged: viewModel.updateSearch,
-                  decoration: InputDecoration(
-                    hintText: 'Search by ID / Name',
-                    prefixIcon:
-                        const Icon(Icons.search, color: AppTheme.greenMid),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _FilterChip(label: 'All Districts', selected: true),
-                      _FilterChip(label: 'Dehradun'),
-                      _FilterChip(label: 'Haridwar'),
-                      _FilterChip(label: 'Tehri'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
 
-          // Application List
-          Expanded(
-            child: state.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : state.error != null
-                    ? Center(child: Text('Error: ${state.error}'))
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: viewModel.filteredApplications.length,
-                        itemBuilder: (context, index) {
-                          final app = viewModel.filteredApplications[index];
-                          return _ApplicationCard(app: app);
-                        },
-                      ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/home/new_application'),
-        backgroundColor: AppTheme.saffron,
-        label: const Text('New Application',
-            style: TextStyle(color: Colors.white)),
-        icon: const Icon(Icons.add, color: Colors.white),
-      ),
+        // Application List
+        Expanded(
+          child: state.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : state.error != null
+                  ? Center(child: Text('Error: ${state.error}'))
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: viewModel.filteredApplications.length,
+                      itemBuilder: (context, index) {
+                        final app = viewModel.filteredApplications[index];
+                        return _ApplicationCard(app: app);
+                      },
+                    ),
+        ),
+      ],
     );
   }
 }

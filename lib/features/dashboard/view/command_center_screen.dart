@@ -11,29 +11,12 @@ class CommandCenterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return RefreshIndicator(
+      onRefresh: () => ref.read(dashboardViewModelProvider.notifier).refresh(),
+      child: ListView(
+        padding: EdgeInsets.all(16),
+        shrinkWrap: true,
         children: [
-          Row(
-            children: [
-              Text(
-                'Executive Command Center',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textDark),
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () =>
-                    ref.read(dashboardViewModelProvider.notifier).refresh(),
-                child: const Icon(Icons.refresh, color: AppTheme.textDark),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
           _buildLiveStatusHeader(context),
           const SizedBox(height: 24),
           _buildSectionTitle(context, '🏛 State Overview (Essential KPIs)'),

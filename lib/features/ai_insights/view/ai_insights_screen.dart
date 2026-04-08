@@ -40,51 +40,29 @@ class _AIInsightsScreenState extends ConsumerState<AIInsightsScreen> {
         data: (state) => RefreshIndicator(
           onRefresh: () =>
               ref.read(aiInsightsViewModelProvider.notifier).refresh(),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      'AI Intelligence Layer',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.textDark),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => ref
-                          .read(aiInsightsViewModelProvider.notifier)
-                          .refresh(),
-                      child:
-                          const Icon(Icons.refresh, color: AppTheme.textDark),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildNeuralStatusHeader(context),
-                const SizedBox(height: 24),
-                _buildKPIGrid(context, state),
-                const SizedBox(height: 32),
-                _buildPerformanceDashboard(context, state),
-                const SizedBox(height: 32),
-                _buildForecastSection(context, state),
-                const SizedBox(height: 32),
-                _buildRiskDistributionSection(context, state),
-                const SizedBox(height: 32),
-                _buildPredictionVsActualSection(context, state),
-                const SizedBox(height: 32),
-                _buildFraudAlertsSection(context, state),
-                const SizedBox(height: 32),
-                _buildSpeciesIdSection(context, state),
-                const SizedBox(height: 32),
-                _buildAnalysisHistory(context, state),
-                const SizedBox(height: 40),
-              ],
-            ),
+          child: ListView(
+            padding: EdgeInsets.all(16),
+            shrinkWrap: true,
+            children: [
+              _buildNeuralStatusHeader(context),
+              const SizedBox(height: 24),
+              _buildKPIGrid(context, state),
+              const SizedBox(height: 32),
+              _buildPerformanceDashboard(context, state),
+              const SizedBox(height: 32),
+              _buildForecastSection(context, state),
+              const SizedBox(height: 32),
+              _buildRiskDistributionSection(context, state),
+              const SizedBox(height: 32),
+              _buildPredictionVsActualSection(context, state),
+              const SizedBox(height: 32),
+              _buildFraudAlertsSection(context, state),
+              const SizedBox(height: 32),
+              _buildSpeciesIdSection(context, state),
+              const SizedBox(height: 32),
+              _buildAnalysisHistory(context, state),
+              const SizedBox(height: 40),
+            ],
           ),
         ),
         loading: () => const AppLoader(

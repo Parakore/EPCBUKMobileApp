@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/app_section_header.dart';
 import '../viewmodel/settings_viewmodel.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -14,39 +13,30 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.watch(settingsViewModelProvider);
     final viewModel = ref.read(settingsViewModelProvider.notifier);
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  'System Settings',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.greenDark.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
-            ),
-            const AppSectionHeader(title: 'Workflow SLA Settings (Days)'),
-            const SizedBox(height: 16),
-            _buildSlaGrid(settings, viewModel),
-            const SizedBox(height: 32),
-            const AppSectionHeader(title: 'Notification Settings'),
-            const SizedBox(height: 8),
-            _buildNotificationToggles(settings, viewModel),
-            const SizedBox(height: 48),
-            AppButton(
-              text: 'Save Configuration',
-              onPressed: viewModel.saveSettings,
-            ),
-            const SizedBox(height: 32),
-          ],
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.all(16),
+      children: [
+        Text('Workflow Settings (Days)',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.primaryGreen)),
+        const SizedBox(height: 12),
+        _buildSlaGrid(settings, viewModel),
+        const SizedBox(height: 16),
+        Text('Notification Settings',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.primaryGreen)),
+        _buildNotificationToggles(settings, viewModel),
+        const SizedBox(height: 16),
+        AppButton(
+          text: 'Save Configuration',
+          onPressed: viewModel.saveSettings,
         ),
-      ),
+      ],
     );
   }
 

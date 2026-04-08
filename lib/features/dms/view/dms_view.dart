@@ -15,62 +15,32 @@ class DMSView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dmsState = ref.watch(dmsViewModelProvider);
 
-    return Scaffold(
-      body: dmsState.when(
-        data: (docs) => RefreshIndicator(
-          onRefresh: () => ref.read(dmsViewModelProvider.notifier).refresh(),
-          child: Column(
-            children: [
-              Container(
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        const SizedBox(width: 16),
-                        Text(
-                          'Document Management System',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.greenDark.withValues(alpha: 0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+    return dmsState.when(
+      data: (docs) => RefreshIndicator(
+        onRefresh: () => ref.read(dmsViewModelProvider.notifier).refresh(),
+        child: Column(
+          children: [
+            _buildSearchBar(),
+            _buildCategoryTabs(),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: docs.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final doc = docs[index];
+                  return _DocumentCard(doc: doc);
+                },
               ),
-              _buildSearchBar(),
-              _buildCategoryTabs(),
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: docs.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final doc = docs[index];
-                    return _DocumentCard(doc: doc);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        loading: () => const AppLoader(),
-        error: (err, stack) => AppErrorWidget(
-          message: err.toString(),
-          onRetry: () => ref.read(dmsViewModelProvider.notifier).refresh(),
+            ),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        backgroundColor: AppTheme.saffron,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.cloud_upload_outlined),
-        label: const Text('Upload Document'),
+      loading: () => const AppLoader(),
+      error: (err, stack) => AppErrorWidget(
+        message: err.toString(),
+        onRetry: () => ref.read(dmsViewModelProvider.notifier).refresh(),
       ),
     );
   }

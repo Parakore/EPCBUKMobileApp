@@ -34,19 +34,19 @@ extension UserRoleExtension on UserRole {
   String get displayName {
     switch (this) {
       case UserRole.applicant:
-        return 'Ramesh Kumar';
+        return 'Applicant User';
       case UserRole.forestGuard:
-        return 'Suresh Rawat';
+        return 'Forest Guard User';
       case UserRole.rangeOfficer:
-        return 'Dinesh Negi';
+        return 'Range Officer User';
       case UserRole.dfo:
-        return 'Rajiv Sharma';
+        return 'DFO User';
       case UserRole.ukpcb:
-        return 'Priya Bisht';
+        return 'UKPCB User';
       case UserRole.dm:
-        return 'Anand Verma, IAS';
+        return 'DM User';
       case UserRole.treasury:
-        return 'Mohan Lal';
+        return 'Treasury User';
       case UserRole.admin:
         return 'State Admin User';
     }

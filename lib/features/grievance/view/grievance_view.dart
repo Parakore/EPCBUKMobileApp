@@ -15,61 +15,38 @@ class GrievanceView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final grievanceState = ref.watch(grievanceViewModelProvider);
 
-    return Scaffold(
-      body: grievanceState.when(
-        data: (grievances) => RefreshIndicator(
-          onRefresh: () =>
-              ref.read(grievanceViewModelProvider.notifier).refresh(),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      'Grievance Portal',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.primaryGreen,
-                              ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildSummaryCards(),
-                _buildSectionHeader('My Grievances'),
-                const SizedBox(height: 12),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: grievances.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final item = grievances[index];
-                    return _GrievanceCard(item: item);
-                  },
-                ),
-              ],
-            ),
+    return grievanceState.when(
+      data: (grievances) => RefreshIndicator(
+        onRefresh: () =>
+            ref.read(grievanceViewModelProvider.notifier).refresh(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSummaryCards(),
+              _buildSectionHeader('My Grievances'),
+              const SizedBox(height: 12),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: grievances.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final item = grievances[index];
+                  return _GrievanceCard(item: item);
+                },
+              ),
+            ],
           ),
         ),
-        loading: () => const AppLoader(),
-        error: (err, stack) => AppErrorWidget(
-          message: err.toString(),
-          onRetry: () =>
-              ref.read(grievanceViewModelProvider.notifier).refresh(),
-        ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        backgroundColor: AppTheme.saffron,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add_comment_outlined),
-        label: const Text('File New Grievance'),
+      loading: () => const AppLoader(),
+      error: (err, stack) => AppErrorWidget(
+        message: err.toString(),
+        onRetry: () => ref.read(grievanceViewModelProvider.notifier).refresh(),
       ),
     );
   }

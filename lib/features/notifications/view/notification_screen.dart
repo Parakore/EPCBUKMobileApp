@@ -45,20 +45,6 @@ class NotificationScreen extends ConsumerWidget {
               .getNotifications(),
         ),
       ),
-      floatingActionButton: notificationState.maybeWhen(
-        data: (notifications) => notifications.any((n) => !n.isRead)
-            ? FloatingActionButton.extended(
-                onPressed: () => ref
-                    .read(notificationViewModelProvider.notifier)
-                    .markAllAsRead(),
-                label: const Text('Mark all as read',
-                    style: TextStyle(color: Colors.white)),
-                icon: const Icon(Icons.done_all, color: Colors.white),
-                backgroundColor: AppTheme.saffron,
-              ).animate().scale()
-            : null,
-        orElse: () => null,
-      ),
     );
   }
 

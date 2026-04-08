@@ -815,7 +815,7 @@ class ReportsScreen extends ConsumerWidget {
                     ),
                     belowBarData: BarAreaData(
                       show: showArea,
-                      color: colors[0].withOpacity(0.1),
+                      color: colors[0].withValues(alpha: 0.1),
                     ),
                   ),
                   if (labels.length > 1)
@@ -842,7 +842,7 @@ class ReportsScreen extends ConsumerWidget {
                       ),
                       belowBarData: BarAreaData(
                         show: showArea,
-                        color: colors[1].withOpacity(0.1),
+                        color: colors[1].withValues(alpha: 0.1),
                       ),
                     ),
                 ],
@@ -920,7 +920,7 @@ Widget _buildRadarChart(Map<String, double> slaData) {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: AppTheme.forestGreen.withOpacity(0.2),
+                color: AppTheme.forestGreen.withValues(alpha: 0.2),
                 border: Border.all(color: AppTheme.forestGreen, width: 2),
                 borderRadius: BorderRadius.circular(2),
               ),
@@ -942,7 +942,7 @@ Widget _buildRadarChart(Map<String, double> slaData) {
             RadarChartData(
               dataSets: [
                 RadarDataSet(
-                  fillColor: AppTheme.forestGreen.withOpacity(0.15),
+                  fillColor: AppTheme.forestGreen.withValues(alpha: 0.15),
                   borderColor: AppTheme.forestGreen,
                   borderWidth: 3,
                   entryRadius: 4,

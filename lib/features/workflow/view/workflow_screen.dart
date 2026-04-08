@@ -73,59 +73,54 @@ class WorkflowScreen extends StatelessWidget {
           color: AppTheme.gold),
     ];
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Stepper Header
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [AppTheme.greenDark, AppTheme.greenMain],
-                ),
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        // Stepper Header
+        Container(
+          height: 100,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppTheme.greenDark, AppTheme.greenMain],
+            ),
+          ),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            itemCount: stages.length,
+            itemBuilder: (context, index) {
+              return _WorkflowStep(stage: stages[index], index: index + 1);
+            },
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'History & Timeline',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                itemCount: stages.length,
+              const SizedBox(height: 16),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: history.length,
                 itemBuilder: (context, index) {
-                  return _WorkflowStep(stage: stages[index], index: index + 1);
+                  return _TimelineItem(
+                    entry: history[index],
+                    isLast: index == history.length - 1,
+                  );
                 },
               ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'History & Timeline',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: history.length,
-                    itemBuilder: (context, index) {
-                      return _TimelineItem(
-                        entry: history[index],
-                        isLast: index == history.length - 1,
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

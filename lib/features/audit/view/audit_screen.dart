@@ -17,57 +17,37 @@ class AuditScreen extends ConsumerWidget {
     final state = ref.watch(auditViewModelProvider);
     final viewModel = ref.read(auditViewModelProvider.notifier);
 
-    return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  'System Audit Trail',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.greenDark.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: AppTextField(
+            labelText: 'Search Logs',
+            hintText: 'Search by user, action or ID...',
+            prefixIcon: const Icon(Icons.search),
+            onChanged: viewModel.setSearchQuery,
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: AppTextField(
-              labelText: 'Search Logs',
-              hintText: 'Search by user, action or ID...',
-              prefixIcon: const Icon(Icons.search),
-              onChanged: viewModel.setSearchQuery,
-            ),
-          ),
-          Expanded(
-            child: state.isLoading
-                ? const AppLoader()
-                : state.error != null
-                    ? AppErrorWidget(
-                        message: state.error!,
-                        onRetry: () => viewModel.loadLogs(),
-                      )
-                    : state.filteredLogs.isEmpty
-                        ? const Center(child: Text('No logs found'))
-                        : ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: state.filteredLogs.length,
-                            itemBuilder: (context, index) {
-                              final log = state.filteredLogs[index];
-                              return _AuditCard(log: log);
-                            },
-                          ),
-          ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: state.isLoading
+              ? const AppLoader()
+              : state.error != null
+                  ? AppErrorWidget(
+                      message: state.error!,
+                      onRetry: () => viewModel.loadLogs(),
+                    )
+                  : state.filteredLogs.isEmpty
+                      ? const Center(child: Text('No logs found'))
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: state.filteredLogs.length,
+                          itemBuilder: (context, index) {
+                            final log = state.filteredLogs[index];
+                            return _AuditCard(log: log);
+                          },
+                        ),
+        ),
+      ],
     );
   }
 }

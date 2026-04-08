@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
@@ -15,62 +14,41 @@ class GISMapScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mapState = ref.watch(gisMapViewModelProvider);
 
-    return Scaffold(
-      body: mapState.when(
-        data: (state) => Stack(
-          children: [
-            FlutterMap(
-              options: MapOptions(
-                initialCenter: state.currentCenter,
-                initialZoom: state.currentZoom,
-                onPositionChanged: (position, hasGesture) {
-                  if (hasGesture && position.center != null) {
-                    ref
-                        .read(gisMapViewModelProvider.notifier)
-                        .updateCenter(position.center!);
-                  }
-                },
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.epcbuk.mobile_app',
-                ),
-                MarkerLayer(
-                  markers: state.cachedTrees
-                      .map((tree) => _buildMarker(context, tree))
-                      .toList(),
-                ),
-              ],
-            ),
-            _buildLegend(),
-            _buildFloatingStats(state.cachedTrees.length),
-          ],
-        ),
-        loading: () => const AppLoader(message: 'Loading spatial data...'),
-        error: (err, stack) => AppErrorWidget(
-          message: err.toString(),
-          onRetry: () => ref.read(gisMapViewModelProvider.notifier).refresh(),
-        ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
+    return mapState.when(
+      data: (state) => Stack(
         children: [
-          FloatingActionButton.extended(
-              onPressed: () =>
-                  ref.read(gisMapViewModelProvider.notifier).refresh(),
-              label: const Text('Refresh'),
-              icon: const Icon(Icons.refresh)),
-          const SizedBox(height: 12),
-          FloatingActionButton.extended(
-            onPressed: () => context.go('/home/geo_tagging'),
-            label: const Text('Tag New Tree',
-                style: TextStyle(color: Colors.white)),
-            icon: const Icon(Icons.add_location_alt, color: Colors.white),
-            backgroundColor: AppTheme.saffron,
+          FlutterMap(
+            options: MapOptions(
+              initialCenter: state.currentCenter,
+              initialZoom: state.currentZoom,
+              onPositionChanged: (position, hasGesture) {
+                if (hasGesture && position.center != null) {
+                  ref
+                      .read(gisMapViewModelProvider.notifier)
+                      .updateCenter(position.center!);
+                }
+              },
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.epcbuk.mobile_app',
+              ),
+              MarkerLayer(
+                markers: state.cachedTrees
+                    .map((tree) => _buildMarker(context, tree))
+                    .toList(),
+              ),
+            ],
           ),
+          _buildLegend(),
+          _buildFloatingStats(state.cachedTrees.length),
         ],
+      ),
+      loading: () => const AppLoader(message: 'Loading spatial data...'),
+      error: (err, stack) => AppErrorWidget(
+        message: err.toString(),
+        onRetry: () => ref.read(gisMapViewModelProvider.notifier).refresh(),
       ),
     );
   }

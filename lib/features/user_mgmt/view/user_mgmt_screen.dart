@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_badge.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
@@ -21,24 +20,6 @@ class UserMgmtScreen extends ConsumerWidget {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  'User Management',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.greenDark.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: AppTextField(
@@ -68,11 +49,6 @@ class UserMgmtScreen extends ConsumerWidget {
                           ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppTheme.primaryGreen,
-        child: const Icon(Icons.person_add, color: Colors.white),
       ),
     );
   }

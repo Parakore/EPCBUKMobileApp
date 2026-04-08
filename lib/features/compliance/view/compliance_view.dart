@@ -15,51 +15,40 @@ class ComplianceView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final complianceState = ref.watch(complianceViewModelProvider);
 
-    return Scaffold(
-      body: complianceState.when(
-        data: (cases) => RefreshIndicator(
-          onRefresh: () =>
-              ref.read(complianceViewModelProvider.notifier).refresh(),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Environmental Compliance',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.greenDark.withValues(alpha: 0.8),
-                  ),
-                ),
-                _buildHeader(),
-                const SizedBox(height: 16),
-                _buildKpiGrid(),
-                _buildSectionTitle('Compliance Queue'),
-                const SizedBox(height: 12),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: cases.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final item = cases[index];
-                    return _ComplianceCaseCard(item: item);
-                  },
-                ),
-              ],
-            ),
+    return complianceState.when(
+      data: (cases) => RefreshIndicator(
+        onRefresh: () =>
+            ref.read(complianceViewModelProvider.notifier).refresh(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              const SizedBox(height: 16),
+              _buildKpiGrid(),
+              _buildSectionTitle('Compliance Queue'),
+              const SizedBox(height: 12),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: cases.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final item = cases[index];
+                  return _ComplianceCaseCard(item: item);
+                },
+              ),
+            ],
           ),
         ),
-        loading: () => const AppLoader(),
-        error: (err, stack) => AppErrorWidget(
-          message: err.toString(),
-          onRetry: () =>
-              ref.read(complianceViewModelProvider.notifier).refresh(),
-        ),
+      ),
+      loading: () => const AppLoader(),
+      error: (err, stack) => AppErrorWidget(
+        message: err.toString(),
+        onRetry: () => ref.read(complianceViewModelProvider.notifier).refresh(),
       ),
     );
   }
