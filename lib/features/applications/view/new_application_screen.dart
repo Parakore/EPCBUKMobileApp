@@ -5,6 +5,10 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/app_section_header.dart';
+import '../../../core/widgets/app_dropdown_field.dart';
+import '../../../core/widgets/app_upload_field.dart';
+import '../../../core/widgets/app_detail_row.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../viewmodel/new_application_viewmodel.dart';
 import '../model/new_application_state.dart';
@@ -178,9 +182,9 @@ class _PersonalDetailsStep extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        const _SectionHeader(icon: Icons.person, title: 'Personal / Project Details'),
+        const AppSectionHeader(icon: Icons.person, title: 'Personal / Project Details'),
         const SizedBox(height: 20),
-        _DropdownField(
+        AppDropdownField<String>(
           label: 'Applicant Type',
           value: state.applicantDetails.type,
           items: const [
@@ -189,7 +193,8 @@ class _PersonalDetailsStep extends StatelessWidget {
             'Private Organization',
             'PSU / Utility'
           ],
-          onChanged: (val) => viewModel.updateApplicantField(type: val),
+          itemLabelBuilder: (val) => val,
+          onChanged: (val) => viewModel.updateApplicantField(type: val!),
         ),
         const SizedBox(height: 16),
         AppTextField(
@@ -235,7 +240,7 @@ class _PersonalDetailsStep extends StatelessWidget {
           onChanged: (val) => viewModel.updateApplicantField(email: val),
         ),
         const SizedBox(height: 16),
-        _DropdownField(
+        AppDropdownField<String>(
           label: 'Purpose of Cutting',
           value: state.applicantDetails.purpose,
           items: const [
@@ -247,7 +252,8 @@ class _PersonalDetailsStep extends StatelessWidget {
             'Storm/Disaster (Tree Fallen)',
             'Other',
           ],
-          onChanged: (val) => viewModel.updateApplicantField(purpose: val),
+          itemLabelBuilder: (val) => val,
+          onChanged: (val) => viewModel.updateApplicantField(purpose: val!),
         ),
       ],
     );
@@ -265,9 +271,9 @@ class _LandDetailsStep extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        const _SectionHeader(icon: Icons.map, title: 'Land & Location Details'),
+        const AppSectionHeader(icon: Icons.map, title: 'Land & Location Details'),
         const SizedBox(height: 20),
-        _DropdownField(
+        AppDropdownField<String>(
           label: 'District',
           value: state.landDetails.district,
           items: const [
@@ -279,7 +285,8 @@ class _LandDetailsStep extends StatelessWidget {
             'Chamoli',
             'Nainital',
           ],
-          onChanged: (val) => viewModel.updateLandField(district: val),
+          itemLabelBuilder: (val) => val,
+          onChanged: (val) => viewModel.updateLandField(district: val!),
         ),
         const SizedBox(height: 16),
         AppTextField(
@@ -297,7 +304,7 @@ class _LandDetailsStep extends StatelessWidget {
           onChanged: (val) => viewModel.updateLandField(khasra: val),
         ),
         const SizedBox(height: 16),
-        _DropdownField(
+        AppDropdownField<String>(
           label: 'Land Type',
           value: state.landDetails.landType,
           items: const [
@@ -307,7 +314,8 @@ class _LandDetailsStep extends StatelessWidget {
             'Protected Forest',
             'Road/Government Land'
           ],
-          onChanged: (val) => viewModel.updateLandField(landType: val),
+          itemLabelBuilder: (val) => val,
+          onChanged: (val) => viewModel.updateLandField(landType: val!),
         ),
         const SizedBox(height: 16),
         AppTextField(
@@ -364,7 +372,7 @@ class _TreeDetailsStep extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const _SectionHeader(icon: Icons.park, title: 'Tree Details'),
+            const AppSectionHeader(icon: Icons.park, title: 'Tree Details'),
             TextButton.icon(
               onPressed: viewModel.addTree,
               icon: const Icon(Icons.add, size: 18),
@@ -400,27 +408,27 @@ class _DocumentsStep extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        const _SectionHeader(icon: Icons.file_present, title: 'Document Upload'),
+        const AppSectionHeader(icon: Icons.file_present, title: 'Document Upload'),
         const SizedBox(height: 20),
-        _UploadPlaceholder(
+        AppUploadField(
           label: 'Land Ownership Proof (Khatauni)',
           fileName: state.documents['land_proof'],
           onTap: () => viewModel.updateDocument('land_proof', 'khatauni_v2.pdf'),
         ),
         const SizedBox(height: 16),
-        _UploadPlaceholder(
+        AppUploadField(
           label: 'Project Approval Letter',
           fileName: state.documents['project_approval'],
           onTap: () => viewModel.updateDocument('project_approval', 'approval_letter.pdf'),
         ),
         const SizedBox(height: 16),
-        _UploadPlaceholder(
+        AppUploadField(
           label: 'Site Photographs',
           fileName: state.documents['site_photos'],
           onTap: () => viewModel.updateDocument('site_photos', 'site_img_001.jpg'),
         ),
         const SizedBox(height: 16),
-        _UploadPlaceholder(
+        AppUploadField(
           label: 'NOC from Revenue Dept',
           fileName: state.documents['noc_revenue'],
           onTap: () => viewModel.updateDocument('noc_revenue', 'revenue_noc_signed.pdf'),
@@ -441,22 +449,54 @@ class _ReviewStep extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        const _SectionHeader(icon: Icons.fact_check, title: 'Review & Submit'),
+        const AppSectionHeader(icon: Icons.fact_check, title: 'Review & Submit'),
         const SizedBox(height: 20),
         GlassCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _ReviewRow(label: 'Applicant', value: state.applicantDetails.fullName),
-              _ReviewRow(label: 'Type', value: state.applicantDetails.type),
-              _ReviewRow(label: 'Mobile', value: state.applicantDetails.mobile),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'Applicant',
+                value: state.applicantDetails.fullName,
+              ),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'Type',
+                value: state.applicantDetails.type,
+              ),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'Mobile',
+                value: state.applicantDetails.mobile,
+              ),
               const Divider(),
-              _ReviewRow(label: 'District', value: state.landDetails.district),
-              _ReviewRow(label: 'Village', value: state.landDetails.village),
-              _ReviewRow(label: 'Area', value: '${state.landDetails.area} Ha'),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'District',
+                value: state.landDetails.district,
+              ),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'Village',
+                value: state.landDetails.village,
+              ),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'Area',
+                value: '${state.landDetails.area} Ha',
+              ),
               const Divider(),
-              _ReviewRow(label: 'Trees Added', value: '${state.trees.length}'),
-              _ReviewRow(label: 'Docs Uploaded', value: '${state.documents.values.where((e) => e != null).length}/4'),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'Trees Added',
+                value: '${state.trees.length}',
+              ),
+              AppDetailRow(
+                layout: DetailRowLayout.spaceBetween,
+                label: 'Docs Uploaded',
+                value: '${state.documents.values.where((e) => e != null).length}/4',
+              ),
             ],
           ),
         ),
@@ -479,81 +519,6 @@ class _ReviewStep extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// --- Helper Widgets ---
-
-class _SectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String title;
-
-  const _SectionHeader({required this.icon, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: AppTheme.forestGreen, size: 24),
-        const SizedBox(width: 10),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.forestGreen,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _DropdownField extends StatelessWidget {
-  final String label;
-  final String value;
-  final List<String> items;
-  final Function(String) onChanged;
-
-  const _DropdownField({
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppTheme.forestGreen.withValues(alpha: 0.8),
-                letterSpacing: 1,
-              ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey[200]!),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: value,
-              isExpanded: true,
-              items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onChanged: (val) => onChanged(val!),
-            ),
           ),
         ),
       ],
@@ -592,11 +557,12 @@ class _TreeItemCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            _DropdownField(
+            AppDropdownField<String>(
               label: 'Species',
               value: tree.species,
               items: const ['Teak (Tectona grandis)', 'Sal (Shorea robusta)', 'Chir Pine', 'Oak', 'Other'],
-              onChanged: (val) => onUpdate(tree.copyWith(species: val)),
+              itemLabelBuilder: (val) => val,
+              onChanged: (val) => onUpdate(tree.copyWith(species: val!)),
             ),
             const SizedBox(height: 12),
             Row(
@@ -620,68 +586,6 @@ class _TreeItemCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _UploadPlaceholder extends StatelessWidget {
-  final String label;
-  final String? fileName;
-  final VoidCallback onTap;
-
-  const _UploadPlaceholder({required this.label, this.fileName, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppTheme.forestGreen.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.forestGreen.withValues(alpha: 0.2), style: BorderStyle.solid),
-        ),
-        child: Column(
-          children: [
-            Icon(fileName != null ? Icons.check_circle : Icons.cloud_upload,
-                color: AppTheme.forestGreen, size: 32),
-            const SizedBox(height: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-            const SizedBox(height: 4),
-            Text(
-              fileName ?? 'Click to upload PDF or Image',
-              style: TextStyle(
-                fontSize: 12,
-                color: fileName != null ? AppTheme.forestGreen : Colors.grey[500],
-                fontStyle: fileName != null ? FontStyle.normal : FontStyle.italic,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ReviewRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _ReviewRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 13)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-        ],
       ),
     );
   }

@@ -7,6 +7,7 @@ import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_otp_field.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../providers/providers.dart';
+import '../../../routes/app_router.dart';
 
 class OTPScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -55,7 +56,7 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
     final success =
         await ref.read(authViewModelProvider.notifier).verifyOtp(_otp!);
     if (success && mounted) {
-      context.go('/home/dashboard');
+      context.go(AppRoutes.dashboard);
     }
   }
 

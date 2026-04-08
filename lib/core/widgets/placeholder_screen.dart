@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'app_button.dart';
 import '../../core/theme/app_theme.dart';
+import '../../routes/app_router.dart';
 
 class PlaceholderScreen extends StatelessWidget {
   final String title;
@@ -59,7 +60,7 @@ class PlaceholderScreen extends StatelessWidget {
               variant: ButtonVariant.outline,
               width: 220,
               icon: const Icon(Icons.home_outlined),
-              onPressed: () => context.go('/home/dashboard'),
+              onPressed: () => context.go(AppRoutes.dashboard),
             ),
           ],
         ),

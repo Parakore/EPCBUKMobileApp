@@ -6,6 +6,7 @@ import '../models/user_role.dart';
 import '../constants/role_menus.dart';
 import '../theme/app_theme.dart';
 import '../../providers/providers.dart';
+import '../../routes/app_router.dart';
 
 class AppDrawer extends ConsumerWidget {
   final String currentRoute;
@@ -283,7 +284,7 @@ class _DrawerFooter extends ConsumerWidget {
                 label: 'Profile',
                 onTap: () {
                   Navigator.of(context).pop();
-                  context.go('/home/profile');
+                  context.go(AppRoutes.profile);
                 },
               ),
               const SizedBox(width: 8),
@@ -292,7 +293,7 @@ class _DrawerFooter extends ConsumerWidget {
                 label: 'Settings',
                 onTap: () {
                   Navigator.of(context).pop();
-                  context.go('/home/settings');
+                  context.go(AppRoutes.settings);
                 },
               ),
               const SizedBox(width: 8),
@@ -303,7 +304,7 @@ class _DrawerFooter extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                   ref.read(authViewModelProvider.notifier).logout();
-                  context.go('/login');
+                  context.go(AppRoutes.login);
                 },
               ),
             ],

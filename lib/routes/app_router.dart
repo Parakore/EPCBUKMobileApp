@@ -24,19 +24,46 @@ import '../features/reports/view/reports_screen.dart';
 import '../features/user_mgmt/view/user_mgmt_screen.dart';
 import '../features/settings/view/settings_screen.dart';
 
+class AppRoutes {
+  static const String root = '/';
+  static const String login = '/login';
+  static const String otp = '/otp';
+  static const String dashboard = '/home/dashboard';
+  static const String newApplication = '/home/new_application';
+  static const String myApplications = '/home/my_applications';
+  static const String paymentStatus = '/home/payment_status';
+  static const String documents = '/home/documents';
+  static const String grievance = '/home/grievance';
+  static const String compliance = '/home/compliance';
+  static const String notifications = '/home/notifications';
+  static const String geoTagging = '/home/geo_tagging';
+  static const String treeEnumeration = '/home/tree_enumeration';
+  static const String gisMap = '/home/gis_map';
+  static const String verificationQueue = '/home/verification_queue';
+  static const String compensationCalc = '/home/compensation_calc';
+  static const String aiInsights = '/home/ai_insights';
+  static const String workflow = '/home/workflow';
+  static const String commandCenter = '/home/command_center';
+  static const String userMgmt = '/home/user_mgmt';
+  static const String profile = '/home/profile';
+  static const String settings = '/home/settings';
+  static const String audit = '/home/audit';
+  static const String reports = '/home/reports';
+}
+
 final appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: AppRoutes.root,
   routes: [
     GoRoute(
-      path: '/',
+      path: AppRoutes.root,
       builder: (context, state) => const SplashView(),
     ),
     GoRoute(
-      path: '/login',
+      path: AppRoutes.login,
       builder: (context, state) => const LoginScreen(),
     ),
     GoRoute(
-      path: '/otp',
+      path: AppRoutes.otp,
       builder: (context, state) => const OTPScreen(userId: 'User'),
     ),
 
@@ -50,90 +77,90 @@ final appRouter = GoRouter(
       },
       routes: [
         GoRoute(
-          path: '/home/dashboard',
+          path: AppRoutes.dashboard,
           builder: (context, state) => const DashboardScreen(),
         ),
         GoRoute(
-          path: '/home/new_application',
+          path: AppRoutes.newApplication,
           builder: (context, state) => const NewApplicationScreen(),
         ),
         GoRoute(
-          path: '/home/my_applications',
+          path: AppRoutes.myApplications,
           builder: (context, state) => const ApplicationsScreen(),
         ),
         GoRoute(
-          path: '/home/payment_status',
+          path: AppRoutes.paymentStatus,
           builder: (context, state) => const PaymentStatusScreen(),
         ),
         GoRoute(
-          path: '/home/documents',
+          path: AppRoutes.documents,
           builder: (context, state) => const DMSView(),
         ),
         GoRoute(
-          path: '/home/grievance',
+          path: AppRoutes.grievance,
           builder: (context, state) => const GrievanceView(),
         ),
         GoRoute(
-          path: '/home/compliance',
+          path: AppRoutes.compliance,
           builder: (context, state) => const ComplianceView(),
         ),
         GoRoute(
-          path: '/home/notifications',
+          path: AppRoutes.notifications,
           builder: (context, state) => const NotificationScreen(),
         ),
         GoRoute(
-          path: '/home/geo_tagging',
+          path: AppRoutes.geoTagging,
           builder: (context, state) => const GeoTaggingScreen(),
         ),
         GoRoute(
-          path: '/home/tree_enumeration',
+          path: AppRoutes.treeEnumeration,
           builder: (context, state) =>
               const PlaceholderScreen(title: 'Tree Enumeration Module'),
         ),
         GoRoute(
-          path: '/home/gis_map',
+          path: AppRoutes.gisMap,
           builder: (context, state) => const GISMapScreen(),
         ),
         GoRoute(
-          path: '/home/verification_queue',
+          path: AppRoutes.verificationQueue,
           builder: (context, state) => const VerificationQueueScreen(),
         ),
         GoRoute(
-          path: '/home/compensation_calc',
+          path: AppRoutes.compensationCalc,
           builder: (context, state) => const ValuationScreen(),
         ),
         GoRoute(
-          path: '/home/ai_insights',
+          path: AppRoutes.aiInsights,
           builder: (context, state) => const AIInsightsScreen(),
         ),
         GoRoute(
-          path: '/home/workflow',
+          path: AppRoutes.workflow,
           builder: (context, state) =>
               const WorkflowScreen(applicationId: 'TCA-2025-0862'),
         ),
         GoRoute(
-          path: '/home/command_center',
+          path: AppRoutes.commandCenter,
           builder: (context, state) => const CommandCenterScreen(),
         ),
         GoRoute(
-          path: '/home/user_mgmt',
+          path: AppRoutes.userMgmt,
           builder: (context, state) => const UserMgmtScreen(),
         ),
         GoRoute(
-          path: '/home/profile',
+          path: AppRoutes.profile,
           builder: (context, state) =>
               const PlaceholderScreen(title: 'User Profile Settings'),
         ),
         GoRoute(
-          path: '/home/settings',
+          path: AppRoutes.settings,
           builder: (context, state) => const SettingsScreen(),
         ),
         GoRoute(
-          path: '/home/audit',
+          path: AppRoutes.audit,
           builder: (context, state) => const AuditScreen(),
         ),
         GoRoute(
-          path: '/home/reports',
+          path: AppRoutes.reports,
           builder: (context, state) => const ReportsScreen(),
         ),
       ],

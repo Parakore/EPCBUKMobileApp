@@ -1,3 +1,4 @@
+import 'package:epcbuk_mobile_app/core/widgets/app_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/widgets/app_drawer.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../providers/providers.dart';
+import '../../../routes/app_router.dart';
 
 class HomeShell extends ConsumerWidget {
   final Widget child;
@@ -18,79 +20,65 @@ class HomeShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authViewModelProvider);
     final notificationState = ref.watch(notificationViewModelProvider);
-
-    final role = authState.role;
 
     // Determine the title based on the current route
     String title = 'UTCMS';
-    if (location.contains('dashboard'))
+    if (location.contains(AppRoutes.dashboard.split('/').last))
       title = 'Executive Dashboard';
-    else if (location.contains('my_applications'))
+    else if (location.contains(AppRoutes.myApplications.split('/').last))
       title = 'Application Management';
-    else if (location.contains('command_center'))
+    else if (location.contains(AppRoutes.commandCenter.split('/').last))
       title = 'Command Center';
-    else if (location.contains('new_application'))
+    else if (location.contains(AppRoutes.newApplication.split('/').last))
       title = 'New Application';
-    else if (location.contains('workflow'))
+    else if (location.contains(AppRoutes.workflow.split('/').last))
       title = 'Workflow Management';
-    else if (location.contains('compensation_calc'))
+    else if (location.contains(AppRoutes.compensationCalc.split('/').last))
       title = 'Tree Valuation Engine';
-    else if (location.contains('payment_status'))
+    else if (location.contains(AppRoutes.paymentStatus.split('/').last))
       title = 'Payment & Treasury';
-    else if (location.contains('audit'))
+    else if (location.contains(AppRoutes.audit.split('/').last))
       title = 'Audit Trail';
-    else if (location.contains('verification_queue'))
+    else if (location.contains(AppRoutes.verificationQueue.split('/').last))
       title = 'Valuation Approval Queue';
-    else if (location.contains('documents'))
+    else if (location.contains(AppRoutes.documents.split('/').last))
       title = 'Docs Management System';
-    else if (location.contains('compliance'))
+    else if (location.contains(AppRoutes.compliance.split('/').last))
       title = 'Compliance Monitoring';
-    else if (location.contains('grievance'))
+    else if (location.contains(AppRoutes.grievance.split('/').last))
       title = 'Grievance Portal';
-    else if (location.contains('gis_map'))
+    else if (location.contains(AppRoutes.gisMap.split('/').last))
       title = 'GIS Exploration';
-    else if (location.contains('reports'))
+    else if (location.contains(AppRoutes.reports.split('/').last))
       title = 'Reports & Analytics';
-    else if (location.contains('ai_insights'))
+    else if (location.contains(AppRoutes.aiInsights.split('/').last))
       title = 'AI Insights';
-    else if (location.contains('profile'))
+    else if (location.contains(AppRoutes.profile.split('/').last))
       title = 'My Profile';
-    else if (location.contains('user_mgmt'))
+    else if (location.contains(AppRoutes.userMgmt.split('/').last))
       title = 'User Management';
-    else if (location.contains('notifications'))
+    else if (location.contains(AppRoutes.notifications.split('/').last))
       title = 'Notifications';
-    else if (location.contains('settings')) title = 'System Settings';
+    else if (location.contains(AppRoutes.settings.split('/').last)) title = 'System Settings';
 
     return Scaffold(
         drawer: AppDrawer(currentRoute: location),
-        appBar: AppBar(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
+        appBar: AppAppBar(
+          title: title,
           actions: [
             IconButton(
               icon: const Badge(
                 label: Text('7'),
                 child: Icon(Icons.notifications_outlined),
               ),
-              onPressed: () => context.go('/home/notifications'),
+              onPressed: () => context.go(AppRoutes.notifications),
             ),
             const SizedBox(width: 8),
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: GestureDetector(
-                onTap: () => context.go('/home/profile'),
+                onTap: () => context.go(AppRoutes.profile),
                 child: const CircleAvatar(
                   radius: 16,
                   backgroundColor: AppTheme.forestGreen,
@@ -113,7 +101,7 @@ class HomeShell extends ConsumerWidget {
                       icon: const Icon(Icons.refresh)),
                   const SizedBox(height: 12),
                   FloatingActionButton.extended(
-                    onPressed: () => context.go('/home/geo_tagging'),
+                    onPressed: () => context.go(AppRoutes.geoTagging),
                     label: const Text('Tag New Tree',
                         style: TextStyle(color: Colors.white)),
                     icon:
@@ -135,7 +123,7 @@ class HomeShell extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
                       FloatingActionButton.extended(
-                        onPressed: () => context.push('/home/new_application'),
+                        onPressed: () => context.push(AppRoutes.newApplication),
                         backgroundColor: AppTheme.saffron,
                         label: const Text('New Application',
                             style: TextStyle(color: Colors.white)),

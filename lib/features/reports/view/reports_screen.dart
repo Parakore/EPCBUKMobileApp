@@ -5,6 +5,8 @@ import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_kpi_card.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
+import '../../../core/widgets/app_chart_card.dart';
+import '../../../core/widgets/app_legend.dart';
 import '../../../core/theme/app_theme.dart';
 import '../viewmodel/reports_viewmodel.dart';
 import '../model/report_model.dart';
@@ -65,25 +67,20 @@ class ReportsScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Monthly Application Volume'),
-          const SizedBox(height: 16),
-          _buildGroupedMonthlyBarChart(
-            data.monthlyVolume,
-            'Applications',
-            'Completed',
-            AppTheme.greenMid,
-            AppTheme.saffron,
-          ),
-          const SizedBox(height: 24),
-          _buildSectionTitle('District-wise Applications'),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+          AppChartCard(
+            title: 'Monthly Application Volume',
+            chart: _buildGroupedMonthlyBarChart(
+              data.monthlyVolume,
+              'Applications',
+              'Completed',
+              AppTheme.greenMid,
+              AppTheme.saffron,
             ),
-            child: Column(
+          ),
+          AppChartCard(
+            title: 'District-wise Applications',
+            padding: const EdgeInsets.all(16),
+            chart: Column(
               children: data.districtWise.asMap().entries.map((e) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -113,7 +110,8 @@ class ReportsScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 FractionallySizedBox(
-                                  widthFactor: e.value.value / 300,
+                                  widthFactor:
+                                      (e.value.value / 300).clamp(0, 1),
                                   child: Container(
                                     height: 16,
                                     decoration: BoxDecoration(
@@ -143,11 +141,10 @@ class ReportsScreen extends ConsumerWidget {
               }).toList(),
             ),
           ),
-          const SizedBox(height: 24),
-          _buildSectionTitle('Application Stage Distribution'),
-          const SizedBox(height: 16),
-          _buildDonutChart(data.stageDistribution),
-          const SizedBox(height: 24),
+          AppChartCard(
+            title: 'Application Stage Distribution',
+            chart: _buildDonutChart(data.stageDistribution),
+          ),
         ],
       ),
     );
@@ -181,14 +178,14 @@ class ReportsScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 24),
-          _buildSectionTitle('Species-wise Compensation (₹ L)'),
-          const SizedBox(height: 16),
-          _buildVerticalBarChart(data.speciesCompensation),
-          const SizedBox(height: 24),
-          _buildSectionTitle('Compensation Trend (₹ Cr)'),
-          const SizedBox(height: 16),
-          _buildLineChart(data.compensationTrend),
-          const SizedBox(height: 24),
+          AppChartCard(
+            title: 'Species-wise Compensation (₹ L)',
+            chart: _buildVerticalBarChart(data.speciesCompensation),
+          ),
+          AppChartCard(
+            title: 'Compensation Trend (₹ Cr)',
+            chart: _buildLineChart(data.compensationTrend),
+          ),
         ],
       ),
     );
@@ -200,28 +197,25 @@ class ReportsScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Afforestation vs Deforestation'),
-          const SizedBox(height: 16),
-          _buildGroupedMonthlyBarChart(
-            data.treesMonthly,
-            'Trees Cut',
-            'Trees Planted',
-            AppTheme.redAlert,
-            AppTheme.greenMid,
+          AppChartCard(
+            title: 'Afforestation vs Deforestation',
+            chart: _buildGroupedMonthlyBarChart(
+              data.treesMonthly,
+              'Trees Cut',
+              'Trees Planted',
+              AppTheme.redAlert,
+              AppTheme.greenMid,
+            ),
           ),
-          const SizedBox(height: 24),
-          _buildSectionTitle('Environmental Impact Index'),
-          const SizedBox(height: 16),
-          _buildTrendLineChart(
-            data.envIndexMonthly,
-            ['Env. Impact Index'],
-            [AppTheme.greenMid],
-            showArea: true,
+          AppChartCard(
+            title: 'Environmental Impact Index',
+            chart: _buildTrendLineChart(
+              data.envIndexMonthly,
+              ['Env. Impact Index'],
+              [AppTheme.greenMid],
+              showArea: true,
+            ),
           ),
-          const SizedBox(height: 24),
-          // _buildSectionTitle('Species wise Compensation'),
-          // const SizedBox(height: 16),
-          // _buildVerticalBarChart(data.speciesCompensation),
         ],
       ),
     );
@@ -233,33 +227,25 @@ class ReportsScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('CAMPA Collected vs Utilized'),
-          const SizedBox(height: 16),
-          _buildGroupedMonthlyBarChart(
-            data.campaMonthly,
-            'Collected (₹ L)',
-            'Utilized (₹ L)',
-            const Color(0xFF9C27B0), // Purple
-            AppTheme.greenMid,
+          AppChartCard(
+            title: 'CAMPA Collected vs Utilized',
+            chart: _buildGroupedMonthlyBarChart(
+              data.campaMonthly,
+              'Collected (₹ L)',
+              'Utilized (₹ L)',
+              const Color(0xFF9C27B0), // Purple
+              AppTheme.greenMid,
+            ),
           ),
-          const SizedBox(height: 24),
-          _buildSectionTitle('Treasury Payment Flow'),
-          const SizedBox(height: 16),
-          _buildTrendLineChart(
-            data.paymentFlowMonthly,
-            ['Released (₹ L)', 'Pending (₹ L)'],
-            [AppTheme.greenMid, AppTheme.redAlert],
-            showPoints: true,
+          AppChartCard(
+            title: 'Treasury Payment Flow',
+            chart: _buildTrendLineChart(
+              data.paymentFlowMonthly,
+              ['Released (₹ L)', 'Pending (₹ L)'],
+              [AppTheme.greenMid, AppTheme.redAlert],
+              showPoints: true,
+            ),
           ),
-          const SizedBox(height: 24),
-          // _buildSectionTitle('Compensation Trend'),
-          // const SizedBox(height: 16),
-          // _buildTrendLineChart(
-          //   data.compensationTrend,
-          //   ['Avg Compensation'],
-          //   [AppTheme.saffron],
-          //   showArea: true,
-          // ),
         ],
       ),
     );
@@ -269,37 +255,20 @@ class ReportsScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _buildSectionTitle('Department SLA Performance'),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
+        AppChartCard(
+          title: 'Department SLA Performance',
           padding: const EdgeInsets.all(16),
-          child: Column(
+          chart: Column(
             children: data.slaPerformance.entries
                 .map((e) => _buildSlaRow(e.key, e.value))
                 .toList(),
           ),
         ),
-        const SizedBox(height: 24),
-        _buildSectionTitle('Department Turnaround Time Comparison'),
-        const SizedBox(height: 16),
-        _buildRadarChart(data.slaPerformance),
-        const SizedBox(height: 24),
+        AppChartCard(
+          title: 'Department Turnaround Time Comparison',
+          chart: _buildRadarChart(data.slaPerformance),
+        ),
       ],
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: AppTheme.forestGreen,
-      ),
     );
   }
 
@@ -335,20 +304,15 @@ class ReportsScreen extends ConsumerWidget {
   }
 
   Widget _buildLineChart(List<ChartDataPoint> points) {
-    return Container(
+    return SizedBox(
       height: 240,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          _buildLegend([
-            LegendItem(
-                label: 'Compensation (₹ Cr)',
-                color: AppTheme.greenMid,
-                isSquare: true),
+          const AppLegend(items: [
+            AppLegendItem(
+              label: 'Compensation (₹ Cr)',
+              color: AppTheme.greenMid,
+            ),
           ]),
           const SizedBox(height: 16),
           Expanded(
@@ -448,13 +412,8 @@ class ReportsScreen extends ConsumerWidget {
   }
 
   Widget _buildVerticalBarChart(List<ChartDataPoint> points) {
-    return Container(
+    return SizedBox(
       height: 240,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(16),
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
@@ -532,13 +491,8 @@ class ReportsScreen extends ConsumerWidget {
   }
 
   Widget _buildDonutChart(List<ChartDataPoint> stages) {
-    return Container(
+    return SizedBox(
       height: 240,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           Expanded(
@@ -602,36 +556,6 @@ class ReportsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLegend(List<LegendItem> items) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: items
-          .map((item) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 16,
-                      height: item.isSquare ? 16 : 12,
-                      decoration: BoxDecoration(
-                        color: item.color,
-                        borderRadius:
-                            BorderRadius.circular(item.isSquare ? 2 : 6),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(item.label,
-                        style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey)),
-                  ],
-                ),
-              ))
-          .toList(),
-    );
-  }
-
   Color _getDistrictColor(int index) {
     final colors = [
       AppTheme.greenMid,
@@ -661,18 +585,13 @@ class ReportsScreen extends ConsumerWidget {
     Color color1,
     Color color2,
   ) {
-    return Container(
+    return SizedBox(
       height: 280,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.fromLTRB(8, 16, 16, 8),
       child: Column(
         children: [
-          _buildLegend([
-            LegendItem(label: label1, color: color1, isSquare: true),
-            LegendItem(label: label2, color: color2, isSquare: true),
+          AppLegend(items: [
+            AppLegendItem(label: label1, color: color1),
+            AppLegendItem(label: label2, color: color2),
           ]),
           const SizedBox(height: 16),
           Expanded(
@@ -774,20 +693,17 @@ class ReportsScreen extends ConsumerWidget {
     bool showArea = false,
     bool showPoints = true,
   }) {
-    return Container(
+    return SizedBox(
       height: 240,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.fromLTRB(8, 16, 16, 12),
       child: Column(
         children: [
-          _buildLegend(labels
-              .asMap()
-              .entries
-              .map((e) => LegendItem(label: e.value, color: colors[e.key]))
-              .toList()),
+          AppLegend(
+              items: labels
+                  .asMap()
+                  .entries
+                  .map((e) =>
+                      AppLegendItem(label: e.value, color: colors[e.key]))
+                  .toList()),
           const SizedBox(height: 16),
           Expanded(
             child: LineChart(
@@ -901,82 +817,56 @@ class ReportsScreen extends ConsumerWidget {
       ),
     );
   }
-}
 
-Widget _buildRadarChart(Map<String, double> slaData) {
-  return Container(
-    height: 380,
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-    ),
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 16,
-              height: 16,
-              decoration: BoxDecoration(
-                color: AppTheme.forestGreen.withValues(alpha: 0.2),
-                border: Border.all(color: AppTheme.forestGreen, width: 2),
-                borderRadius: BorderRadius.circular(2),
-              ),
+  Widget _buildRadarChart(Map<String, double> slaData) {
+    return SizedBox(
+      height: 380,
+      child: Column(
+        children: [
+          const AppLegend(items: [
+            AppLegendItem(
+              label: 'SLA Performance (%)',
+              color: AppTheme.forestGreen,
             ),
-            const SizedBox(width: 8),
-            const Text(
-              'SLA Performance (%)',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey,
+          ]),
+          const SizedBox(height: 32),
+          Expanded(
+            child: RadarChart(
+              RadarChartData(
+                dataSets: [
+                  RadarDataSet(
+                    fillColor: AppTheme.forestGreen.withValues(alpha: 0.15),
+                    borderColor: AppTheme.forestGreen,
+                    borderWidth: 3,
+                    entryRadius: 4,
+                    dataEntries: slaData.values
+                        .map((e) => RadarEntry(value: e))
+                        .toList(),
+                  ),
+                ],
+                radarBackgroundColor: Colors.transparent,
+                borderData: FlBorderData(show: false),
+                radarBorderData: const BorderSide(color: Colors.transparent),
+                titlePositionPercentageOffset: 0.15,
+                titleTextStyle:
+                    const TextStyle(fontSize: 11, color: Colors.grey),
+                getTitle: (index, angle) {
+                  return RadarChartTitle(
+                    text: slaData.keys.elementAt(index),
+                    angle: angle,
+                  );
+                },
+                tickCount: 5,
+                ticksTextStyle:
+                    const TextStyle(fontSize: 10, color: Colors.grey),
+                tickBorderData: const BorderSide(color: Colors.transparent),
+                gridBorderData:
+                    BorderSide(color: Colors.grey.shade200, width: 1),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 32),
-        Expanded(
-          child: RadarChart(
-            RadarChartData(
-              dataSets: [
-                RadarDataSet(
-                  fillColor: AppTheme.forestGreen.withValues(alpha: 0.15),
-                  borderColor: AppTheme.forestGreen,
-                  borderWidth: 3,
-                  entryRadius: 4,
-                  dataEntries:
-                      slaData.values.map((e) => RadarEntry(value: e)).toList(),
-                ),
-              ],
-              radarBackgroundColor: Colors.transparent,
-              borderData: FlBorderData(show: false),
-              radarBorderData: const BorderSide(color: Colors.transparent),
-              titlePositionPercentageOffset: 0.15,
-              titleTextStyle: const TextStyle(fontSize: 11, color: Colors.grey),
-              getTitle: (index, angle) {
-                return RadarChartTitle(
-                  text: slaData.keys.elementAt(index),
-                  angle: angle,
-                );
-              },
-              tickCount: 5,
-              ticksTextStyle: const TextStyle(fontSize: 10, color: Colors.grey),
-              tickBorderData: const BorderSide(color: Colors.transparent),
-              gridBorderData: BorderSide(color: Colors.grey.shade200, width: 1),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-class LegendItem {
-  final String label;
-  final Color color;
-  final bool isSquare;
-
-  LegendItem({required this.label, required this.color, this.isSquare = false});
+        ],
+      ),
+    );
+  }
 }

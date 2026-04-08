@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/models/user_role.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../providers/providers.dart';
-import 'otp_screen.dart';
+import '../../../routes/app_router.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -47,12 +48,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           );
 
       if (success && mounted) {
-        // Navigate to OTP Screen
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => OTPScreen(userId: _userIdController.text),
-          ),
-        );
+        // Navigate to OTP Screen using GoRouter
+        context.push(AppRoutes.otp, extra: _userIdController.text);
       }
     }
   }

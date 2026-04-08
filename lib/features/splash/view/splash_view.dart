@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../providers/providers.dart';
+import '../../../routes/app_router.dart';
 
 class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
@@ -26,9 +27,9 @@ class _SplashViewState extends ConsumerState<SplashView> {
     final authState = ref.read(authViewModelProvider);
     
     if (authState.isAuthenticated) {
-      context.go('/home/dashboard');
+      context.go(AppRoutes.dashboard);
     } else {
-      context.go('/login');
+      context.go(AppRoutes.login);
     }
   }
 

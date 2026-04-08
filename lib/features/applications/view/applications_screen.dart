@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/app_badge.dart';
+import '../../../core/widgets/app_search_bar.dart';
+import '../../../core/widgets/app_filter_chip.dart';
+import '../../../core/widgets/app_detail_row.dart';
 import '../viewmodel/applications_viewmodel.dart';
 import '../model/application_model.dart';
 
@@ -22,29 +25,19 @@ class ApplicationsScreen extends ConsumerWidget {
           color: AppTheme.greenDark.withValues(alpha: 0.05),
           child: Column(
             children: [
-              TextField(
+              AppSearchBar(
+                hintText: 'Search by ID / Name',
                 onChanged: viewModel.updateSearch,
-                decoration: InputDecoration(
-                  hintText: 'Search by ID / Name',
-                  prefixIcon:
-                      const Icon(Icons.search, color: AppTheme.greenMid),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
               ),
               const SizedBox(height: 12),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _FilterChip(label: 'All Districts', selected: true),
-                    _FilterChip(label: 'Dehradun'),
-                    _FilterChip(label: 'Haridwar'),
-                    _FilterChip(label: 'Tehri'),
+                    AppFilterChip(label: 'All Districts', selected: true, onSelected: (val) {}),
+                    AppFilterChip(label: 'Dehradun', onSelected: (val) {}),
+                    AppFilterChip(label: 'Haridwar', onSelected: (val) {}),
+                    AppFilterChip(label: 'Tehri', onSelected: (val) {}),
                   ],
                 ),
               ),
@@ -72,33 +65,6 @@ class ApplicationsScreen extends ConsumerWidget {
   }
 }
 
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-
-  const _FilterChip({required this.label, this.selected = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(label),
-        selected: selected,
-        onSelected: (val) {},
-        backgroundColor: Colors.white,
-        selectedColor: AppTheme.greenMid.withValues(alpha: 0.2),
-        labelStyle: TextStyle(
-          color: selected ? AppTheme.greenDark : AppTheme.textMid,
-          fontSize: 12,
-          fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-    );
-  }
-}
-
 class _ApplicationCard extends StatelessWidget {
   final ApplicationModel app;
 
@@ -117,7 +83,7 @@ class _ApplicationCard extends StatelessWidget {
               children: [
                 Text(
                   app.id,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppTheme.greenMid,
                     fontSize: 16,
@@ -127,27 +93,28 @@ class _ApplicationCard extends StatelessWidget {
               ],
             ),
             const Divider(height: 24),
-            _InfoRow(
-                icon: Icons.person_outline,
-                label: 'Applicant',
-                value: app.applicant),
-            const SizedBox(height: 8),
-            _InfoRow(
-                icon: Icons.location_on_outlined,
-                label: 'District',
-                value: app.district),
-            const SizedBox(height: 8),
-            _InfoRow(
-                icon: Icons.park_outlined,
-                label: 'Tree Count',
-                value: '${app.treeCount} Trees'),
-            const SizedBox(height: 8),
-            _InfoRow(
-                icon: Icons.payments_outlined,
-                label: 'Compensation',
-                value: app.compensation,
-                isBold: true,
-                valueColor: AppTheme.greenMid),
+            AppDetailRow(
+              icon: Icons.person_outline,
+              label: 'Applicant',
+              value: app.applicant,
+            ),
+            AppDetailRow(
+              icon: Icons.location_on_outlined,
+              label: 'District',
+              value: app.district,
+            ),
+            AppDetailRow(
+              icon: Icons.park_outlined,
+              label: 'Tree Count',
+              value: '${app.treeCount} Trees',
+            ),
+            AppDetailRow(
+              icon: Icons.payments_outlined,
+              label: 'Compensation',
+              value: app.compensation,
+              isBold: true,
+              valueColor: AppTheme.greenMid,
+            ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,8 +123,7 @@ class _ApplicationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Current Stage',
-                        style:
-                            TextStyle(fontSize: 10, color: AppTheme.textLight)),
+                        style: TextStyle(fontSize: 10, color: AppTheme.textLight)),
                     const SizedBox(height: 4),
                     AppBadge(label: app.stage, type: app.stageClass),
                   ],
@@ -169,51 +135,13 @@ class _ApplicationCard extends StatelessWidget {
                     minimumSize: const Size(100, 36),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
-                  child: const Text('View Details',
-                      style: TextStyle(fontSize: 12)),
+                  child: const Text('View Details', style: TextStyle(fontSize: 12, color: Colors.white)),
                 ),
               ],
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final bool isBold;
-  final Color? valueColor;
-
-  const _InfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.isBold = false,
-    this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: AppTheme.textLight),
-        const SizedBox(width: 8),
-        Text('$label:',
-            style: TextStyle(fontSize: 12, color: AppTheme.textLight)),
-        const SizedBox(width: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
-            color: valueColor ?? AppTheme.textDark,
-          ),
-        ),
-      ],
     );
   }
 }

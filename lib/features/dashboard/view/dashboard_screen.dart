@@ -9,6 +9,7 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../providers/providers.dart';
 import '../model/dashboard_metrics.dart';
+import '../../../routes/app_router.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -145,7 +146,7 @@ class DashboardScreen extends ConsumerWidget {
           '${metrics.activeDistricts}/13',
           Icons.map,
           Colors.teal,
-          onTap: () => context.go('/home/gis_map'),
+          onTap: () => context.go(AppRoutes.gisMap),
         ),
         _buildKMICard('Afforestation', '${metrics.afforestationProgress}%',
             Icons.eco, Colors.lightGreen),
@@ -487,7 +488,7 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         GestureDetector(
-          onTap: () => context.go('/home/ai_insights'),
+          onTap: () => context.go(AppRoutes.aiInsights),
           child: const Text('View Detailed Analysis →',
               style: TextStyle(fontSize: 12, color: Colors.purple)),
         ),
