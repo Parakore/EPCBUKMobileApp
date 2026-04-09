@@ -20,7 +20,3 @@ class SettingsViewModel extends StateNotifier<SettingsModel> {
     print('Settings Saved: ${state.toString()}');
   }
 }
-
-final settingsViewModelProvider = StateNotifierProvider<SettingsViewModel, SettingsModel>((ref) {
-  return SettingsViewModel();
-});

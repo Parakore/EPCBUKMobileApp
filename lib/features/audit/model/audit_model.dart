@@ -17,6 +17,18 @@ class AuditModel {
     required this.status,
   });
 
+  factory AuditModel.fromJson(Map<String, dynamic> json) {
+    return AuditModel(
+      timestamp: json['timestamp'],
+      user: json['user'],
+      role: json['role'],
+      action: json['action'],
+      caseId: json['caseId'],
+      ipAddress: json['ipAddress'],
+      status: json['status'],
+    );
+  }
+
   AuditModel copyWith({
     String? timestamp,
     String? user,

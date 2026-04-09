@@ -1,27 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/document_model.dart';
-import '../repository/dms_repository.dart';
+import '../../../providers/providers.dart';
 
-final dmsRepositoryProvider = Provider<DMSRepository>((ref) {
-  return DMSRepository();
-});
-
-class DMSViewModel extends AsyncNotifier<List<AppDocument>> {
+class DMSViewModel extends FamilyAsyncNotifier<List<AppDocument>, String> {
   @override
-  Future<List<AppDocument>> build() async {
-    return _fetchDocuments();
+  Future<List<AppDocument>> build(String arg) async {
+    return _fetchDocuments(arg);
   }
 
-  Future<List<AppDocument>> _fetchDocuments() async {
-    return ref.read(dmsRepositoryProvider).getDocuments();
+  Future<List<AppDocument>> _fetchDocuments(String appId) async {
+    return ref.read(dmsRepositoryProvider).getDocuments(appId);
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetchDocuments());
+    state = await AsyncValue.guard(() => _fetchDocuments(arg));
   }
 }
-
-final dmsViewModelProvider = AsyncNotifierProvider<DMSViewModel, List<AppDocument>>(() {
-  return DMSViewModel();
-});

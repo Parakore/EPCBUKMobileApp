@@ -17,6 +17,30 @@ class ValuationResultModel {
     required this.calculatedAt,
   });
 
+  factory ValuationResultModel.fromJson(Map<String, dynamic> json) {
+    return ValuationResultModel(
+      applicationId: json['application_id'] as String,
+      landValue: (json['land_value'] as num).toDouble(),
+      treeValue: (json['tree_value'] as num).toDouble(),
+      structureValue: (json['structure_value'] as num?)?.toDouble() ?? 0.0,
+      solatium: (json['solatium'] as num).toDouble(),
+      totalCompensation: (json['total_compensation'] as num).toDouble(),
+      calculatedAt: DateTime.parse(json['calculated_at'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'application_id': applicationId,
+      'land_value': landValue,
+      'tree_value': treeValue,
+      'structure_value': structureValue,
+      'solatium': solatium,
+      'total_compensation': totalCompensation,
+      'calculated_at': calculatedAt.toIso8601String(),
+    };
+  }
+
   factory ValuationResultModel.mock(String id) {
     double base = 1500000.0;
     double trees = 450000.0;

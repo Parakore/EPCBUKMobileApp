@@ -43,10 +43,3 @@ class ReportsViewModel extends StateNotifier<ReportsState> {
     }
   }
 }
-
-final reportsRepositoryProvider = Provider<ReportsRepository>((ref) => ReportsRepository());
-
-final reportsViewModelProvider = StateNotifierProvider<ReportsViewModel, ReportsState>((ref) {
-  final repository = ref.watch(reportsRepositoryProvider);
-  return ReportsViewModel(repository);
-});

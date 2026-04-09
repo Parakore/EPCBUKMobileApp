@@ -17,8 +17,27 @@ class VerificationModel {
     this.location,
   });
 
+  factory VerificationModel.fromJson(Map<String, dynamic> json) {
+    return VerificationModel(
+      id: json['id'],
+      applicantName: json['applicantName'],
+      projectType: json['projectType'],
+      submittedAt: DateTime.parse(json['submittedAt']),
+      status: VerificationStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => VerificationStatus.pending,
+      ),
+      location: json['location'],
+    );
+  }
+
   factory VerificationModel.mock(int index) {
-    final types = ['Residential Construction', 'Power Line Diversion', 'Bridge Project', 'Eco-Tourism Layout'];
+    final types = [
+      'Residential Construction',
+      'Power Line Diversion',
+      'Bridge Project',
+      'Eco-Tourism Layout'
+    ];
     return VerificationModel(
       id: 'APP-${1000 + index}',
       applicantName: 'Applicant $index',

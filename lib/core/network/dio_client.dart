@@ -1,14 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
+import '../services/storage_service.dart';
+import './api_endpoints.dart';
+
 class DioClient {
   late final Dio _dio;
   final _logger = Logger();
+  final StorageService? _storageService;
 
-  DioClient() {
+  DioClient({StorageService? storageService}) : _storageService = storageService {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.utcms.gov.in/v1', // Placeholder base URL
+        baseUrl: ApiEndpoints.baseUrl,
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
         headers: {
@@ -25,6 +29,11 @@ class DioClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
+          final user = _storageService?.getUser();
+          if (user?.token != null) {
+            options.headers['Authorization'] = 'Bearer ${user!.token}';
+          }
+          
           _logger.i('REQUEST[${options.method}] => PATH: ${options.path}');
           return handler.next(options);
         },
@@ -36,6 +45,12 @@ class DioClient {
         onError: (DioException e, handler) {
           _logger
               .e('ERROR[${e.response?.statusCode}] => MESSAGE: ${e.message}');
+          
+          if (e.response?.statusCode == 401) {
+            // Handle global 401 logout if needed
+            // _storageService?.clearAll();
+          }
+          
           return handler.next(e);
         },
       ),
@@ -44,6 +59,3 @@ class DioClient {
 
   Dio get instance => _dio;
 }
-
-// Global provider-like singleton for simplicity in core
-final dioClient = DioClient();

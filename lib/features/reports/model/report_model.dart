@@ -8,6 +8,14 @@ class ChartDataPoint {
     required this.value,
     this.value2,
   });
+
+  factory ChartDataPoint.fromJson(Map<String, dynamic> json) {
+    return ChartDataPoint(
+      label: json['label'],
+      value: json['value'],
+      value2: json['value2'],
+    );
+  }
 }
 
 class ReportModel {
@@ -36,4 +44,38 @@ class ReportModel {
     required this.campaMonthly,
     required this.paymentFlowMonthly,
   });
+
+  factory ReportModel.fromJson(Map<String, dynamic> json) {
+    return ReportModel(
+      monthlyVolume: (json['monthlyVolume'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      districtWise: (json['districtWise'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      stageDistribution: (json['stageDistribution'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      speciesCompensation: (json['speciesCompensation'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      compensationTrend: (json['compensationTrend'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      slaPerformance: (json['slaPerformance'] as Map<String, dynamic>)
+          .map((k, v) => MapEntry(k, v as double)),
+      treesMonthly: (json['treesMonthly'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      envIndexMonthly: (json['envIndexMonthly'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      campaMonthly: (json['campaMonthly'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+      paymentFlowMonthly: (json['paymentFlowMonthly'] as List<dynamic>)
+          .map((e) => ChartDataPoint.fromJson(e))
+          .toList(),
+    );
+  }
 }

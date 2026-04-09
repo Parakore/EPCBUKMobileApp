@@ -1,10 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/compliance_model.dart';
-import '../repository/compliance_repository.dart';
-
-final complianceRepositoryProvider = Provider<ComplianceRepository>((ref) {
-  return ComplianceRepository();
-});
+import '../../../providers/providers.dart';
 
 class ComplianceViewModel extends AsyncNotifier<List<ComplianceCase>> {
   @override

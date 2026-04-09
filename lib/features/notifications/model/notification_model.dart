@@ -41,4 +41,18 @@ class NotificationModel {
       isRead: isRead ?? this.isRead,
     );
   }
+
+  factory NotificationModel.fromJson(Map<String, dynamic> json) {
+    return NotificationModel(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      timeAgo: json['timeAgo'],
+      type: NotificationType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => NotificationType.submission,
+      ),
+      isRead: json['isRead'] ?? false,
+    );
+  }
 }

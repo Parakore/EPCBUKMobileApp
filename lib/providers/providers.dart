@@ -26,9 +26,28 @@ import '../features/payments/model/payment_model.dart';
 import '../features/notifications/repository/notification_repository.dart';
 import '../features/notifications/viewmodel/notification_viewmodel.dart';
 import '../features/notifications/model/notification_model.dart';
+import '../features/applications/repository/application_repository.dart';
+import '../features/dms/repository/dms_repository.dart';
+import '../features/audit/repository/audit_repository.dart';
+import '../features/audit/viewmodel/audit_viewmodel.dart';
+import '../features/compliance/repository/compliance_repository.dart';
+import '../features/compliance/viewmodel/compliance_viewmodel.dart';
+import '../features/compliance/model/compliance_model.dart';
+import '../features/reports/repository/reports_repository.dart';
+import '../features/reports/viewmodel/reports_viewmodel.dart';
+import '../features/grievance/repository/grievance_repository.dart';
+import '../features/grievance/viewmodel/grievance_viewmodel.dart';
+import '../features/grievance/model/grievance_model.dart';
+import '../features/dms/viewmodel/dms_viewmodel.dart';
+import '../features/dms/model/document_model.dart';
+import '../features/settings/model/settings_model.dart';
+import '../features/settings/viewmodel/settings_viewmodel.dart';
 
 // --- Core Providers ---
-final networkClientProvider = Provider((ref) => DioClient());
+final networkClientProvider = Provider((ref) {
+  final storageService = ref.watch(storageServiceProvider);
+  return DioClient(storageService: storageService);
+});
 
 /// Provider for SharedPreferences to be disposed by ProviderContainer
 final sharedPrefsProvider = Provider<SharedPreferences>((ref) {
@@ -47,7 +66,23 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
-  return DashboardRepositoryImpl();
+  final dio = ref.watch(networkClientProvider).instance;
+  return DashboardRepositoryImpl(dio);
+});
+
+final gisRepositoryProvider = Provider<GISRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return GISRepositoryImpl(dio);
+});
+
+final valuationRepositoryProvider = Provider<ValuationRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return ValuationRepositoryImpl(dio);
+});
+
+final applicationRepositoryProvider = Provider<ApplicationRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return ApplicationRepository(dio);
 });
 
 // --- ViewModel Providers ---
@@ -65,7 +100,8 @@ final dashboardViewModelProvider =
 
 // --- AI Insights Providers ---
 final aiInsightsRepositoryProvider = Provider<AIInsightsRepository>((ref) {
-  return AIInsightsRepositoryImpl();
+  final dio = ref.watch(networkClientProvider).instance;
+  return AIInsightsRepositoryImpl(dio);
 });
 
 final aiInsightsViewModelProvider =
@@ -74,10 +110,6 @@ final aiInsightsViewModelProvider =
 });
 
 // --- GIS Providers ---
-final gisRepositoryProvider = Provider<GISRepository>((ref) {
-  return GISRepositoryImpl();
-});
-
 final gisMapViewModelProvider =
     AsyncNotifierProvider<GISMapViewModel, GISMapState>(() {
   return GISMapViewModel();
@@ -89,12 +121,9 @@ final geoTaggingViewModelProvider =
 });
 
 // --- Valuation Providers ---
-final valuationRepositoryProvider = Provider<ValuationRepository>((ref) {
-  return ValuationRepositoryImpl();
-});
-
 // Interactive Calculator
-final valuationProvider = StateNotifierProvider<ValuationViewModel, ValuationState>((ref) {
+final valuationProvider =
+    StateNotifierProvider<ValuationViewModel, ValuationState>((ref) {
   return ValuationViewModel();
 });
 
@@ -106,7 +135,8 @@ final valuationViewModelProvider = AsyncNotifierProviderFamily<
 
 // --- Verification Providers ---
 final verificationRepositoryProvider = Provider<VerificationRepository>((ref) {
-  return VerificationRepositoryImpl();
+  final dio = ref.watch(networkClientProvider).instance;
+  return VerificationRepositoryImpl(dio);
 });
 
 final verificationViewModelProvider =
@@ -116,7 +146,8 @@ final verificationViewModelProvider =
 
 // --- Payment Providers ---
 final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
-  return PaymentRepository();
+  final dio = ref.watch(networkClientProvider).instance;
+  return PaymentRepository(dio);
 });
 
 final paymentViewModelProvider =
@@ -130,14 +161,76 @@ final paymentSummaryProvider =
   return await repository.getPaymentSummary();
 });
 
-
 // --- Notification Providers ---
 final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
-  return NotificationRepository();
+  final dio = ref.watch(networkClientProvider).instance;
+  return NotificationRepository(dio);
 });
 
-final notificationViewModelProvider =
-    StateNotifierProvider<NotificationNotifier, AsyncValue<List<NotificationModel>>>((ref) {
+// --- DMS Providers ---
+final dmsRepositoryProvider = Provider<DMSRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return DMSRepository(dio);
+});
+
+final notificationViewModelProvider = StateNotifierProvider<
+    NotificationNotifier, AsyncValue<List<NotificationModel>>>((ref) {
   final repository = ref.watch(notificationRepositoryProvider);
   return NotificationNotifier(repository);
+});
+
+// --- Settings Providers ---
+final settingsViewModelProvider =
+    StateNotifierProvider<SettingsViewModel, SettingsModel>((ref) {
+  return SettingsViewModel();
+});
+
+// --- Governance & Compliance Providers ---
+final auditRepositoryProvider = Provider<AuditRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return AuditRepository(dio);
+});
+
+final complianceRepositoryProvider = Provider<ComplianceRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return ComplianceRepository(dio);
+});
+
+final reportsRepositoryProvider = Provider<ReportsRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return ReportsRepository(dio);
+});
+
+final grievanceRepositoryProvider = Provider<GrievanceRepository>((ref) {
+  final dio = ref.watch(networkClientProvider).instance;
+  return GrievanceRepository(dio);
+});
+
+// --- Governance & Compliance ViewModel Providers ---
+final auditViewModelProvider =
+    StateNotifierProvider<AuditViewModel, AuditState>((ref) {
+  final repository = ref.watch(auditRepositoryProvider);
+  return AuditViewModel(repository);
+});
+
+final complianceViewModelProvider =
+    AsyncNotifierProvider<ComplianceViewModel, List<ComplianceCase>>(() {
+  return ComplianceViewModel();
+});
+
+final reportsViewModelProvider =
+    StateNotifierProvider<ReportsViewModel, ReportsState>((ref) {
+  final repository = ref.watch(reportsRepositoryProvider);
+  return ReportsViewModel(repository);
+});
+
+final grievanceViewModelProvider =
+    AsyncNotifierProvider<GrievanceViewModel, List<Grievance>>(() {
+  return GrievanceViewModel();
+});
+
+// DMS ViewModel Provider (Family)
+final dmsViewModelProvider =
+    AsyncNotifierProviderFamily<DMSViewModel, List<AppDocument>, String>(() {
+  return DMSViewModel();
 });

@@ -6,18 +6,19 @@ import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../model/document_model.dart';
-import '../viewmodel/dms_viewmodel.dart';
+import '../../../providers/providers.dart';
 
 class DMSView extends ConsumerWidget {
   const DMSView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dmsState = ref.watch(dmsViewModelProvider);
+    final dmsState = ref.watch(dmsViewModelProvider('all'));
 
     return dmsState.when(
       data: (docs) => RefreshIndicator(
-        onRefresh: () => ref.read(dmsViewModelProvider.notifier).refresh(),
+        onRefresh: () =>
+            ref.read(dmsViewModelProvider('all').notifier).refresh(),
         child: Column(
           children: [
             _buildSearchBar(),
@@ -40,7 +41,7 @@ class DMSView extends ConsumerWidget {
       loading: () => const AppLoader(),
       error: (err, stack) => AppErrorWidget(
         message: err.toString(),
-        onRetry: () => ref.read(dmsViewModelProvider.notifier).refresh(),
+        onRetry: () => ref.read(dmsViewModelProvider('all').notifier).refresh(),
       ),
     );
   }

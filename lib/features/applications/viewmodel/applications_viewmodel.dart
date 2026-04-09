@@ -1,3 +1,4 @@
+import 'package:epcbuk_mobile_app/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/application_model.dart';
 import '../repository/application_repository.dart';
@@ -33,7 +34,8 @@ class ApplicationsState {
 class ApplicationsViewModel extends StateNotifier<ApplicationsState> {
   final ApplicationRepository _repository;
 
-  ApplicationsViewModel(this._repository) : super(ApplicationsState(applications: [])) {
+  ApplicationsViewModel(this._repository)
+      : super(ApplicationsState(applications: [])) {
     loadApplications();
   }
 
@@ -55,11 +57,12 @@ class ApplicationsViewModel extends StateNotifier<ApplicationsState> {
     if (state.searchQuery.isEmpty) return state.applications;
     return state.applications.where((app) {
       return app.id.toLowerCase().contains(state.searchQuery.toLowerCase()) ||
-             app.applicant.toLowerCase().contains(state.searchQuery.toLowerCase());
+          app.applicant.toLowerCase().contains(state.searchQuery.toLowerCase());
     }).toList();
   }
 }
 
-final applicationsViewModelProvider = StateNotifierProvider<ApplicationsViewModel, ApplicationsState>((ref) {
+final applicationsViewModelProvider =
+    StateNotifierProvider<ApplicationsViewModel, ApplicationsState>((ref) {
   return ApplicationsViewModel(ref.watch(applicationRepositoryProvider));
 });

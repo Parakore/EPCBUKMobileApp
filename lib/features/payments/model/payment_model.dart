@@ -8,10 +8,14 @@ enum PaymentStatus {
 
   String get label {
     switch (this) {
-      case PaymentStatus.paid: return 'Paid';
-      case PaymentStatus.pending: return 'Pending';
-      case PaymentStatus.processing: return 'Processing';
-      case PaymentStatus.failed: return 'Failed';
+      case PaymentStatus.paid:
+        return 'Paid';
+      case PaymentStatus.pending:
+        return 'Pending';
+      case PaymentStatus.processing:
+        return 'Processing';
+      case PaymentStatus.failed:
+        return 'Failed';
     }
   }
 }
@@ -75,7 +79,8 @@ class PaymentModel {
 
   String toJson() => json.encode(toMap());
 
-  factory PaymentModel.fromJson(String source) => PaymentModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory PaymentModel.fromJson(String source) =>
+      PaymentModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class PaymentSummary {
@@ -92,4 +97,14 @@ class PaymentSummary {
     required this.monthlyTrend,
     required this.fundAllocation,
   });
+
+  factory PaymentSummary.fromJson(Map<String, dynamic> json) {
+    return PaymentSummary(
+      totalDisbursed: json['totalDisbursed'],
+      pendingAmount: json['pendingAmount'],
+      totalChallans: json['totalChallans'],
+      monthlyTrend: json['monthlyTrend'].cast<double>(),
+      fundAllocation: json['fundAllocation'].cast<String, double>(),
+    );
+  }
 }

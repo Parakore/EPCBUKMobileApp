@@ -61,10 +61,3 @@ class AuditViewModel extends StateNotifier<AuditState> {
     state = state.copyWith(searchQuery: query);
   }
 }
-
-final auditRepositoryProvider = Provider<AuditRepository>((ref) => AuditRepository());
-
-final auditViewModelProvider = StateNotifierProvider<AuditViewModel, AuditState>((ref) {
-  final repository = ref.watch(auditRepositoryProvider);
-  return AuditViewModel(repository);
-});

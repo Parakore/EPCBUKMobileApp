@@ -1,10 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/grievance_model.dart';
-import '../repository/grievance_repository.dart';
-
-final grievanceRepositoryProvider = Provider<GrievanceRepository>((ref) {
-  return GrievanceRepository();
-});
+import '../../../providers/providers.dart';
 
 class GrievanceViewModel extends AsyncNotifier<List<Grievance>> {
   @override

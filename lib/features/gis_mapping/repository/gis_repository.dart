@@ -1,5 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
 import '../model/tree_location_model.dart';
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/network_exceptions.dart';
+import '../../../core/constants/api_constants.dart';
 
 abstract class GISRepository {
   Future<List<TreeLocationModel>> getNearbyTrees(LatLng center, double radiusKm);
@@ -8,23 +12,65 @@ abstract class GISRepository {
 }
 
 class GISRepositoryImpl implements GISRepository {
+  final Dio dio;
+
+  GISRepositoryImpl(this.dio);
+
   @override
-  Future<List<TreeLocationModel>> getNearbyTrees(LatLng center, double radiusKm) async {
-    // Simulate API delay
-    await Future.delayed(const Duration(milliseconds: 600));
-    return _mockTreeLocations();
+  Future<List<TreeLocationModel>> getNearbyTrees(
+      LatLng center, double radiusKm) async {
+    if (ApiConstants.useMockData) {
+      await Future.delayed(
+          const Duration(seconds: ApiConstants.mockDelaySeconds));
+      return _mockTreeLocations();
+    }
+
+    try {
+      final response = await dio.get(
+        ApiEndpoints.gisMarkers,
+        queryParameters: {
+          'lat': center.latitude,
+          'lng': center.longitude,
+          'radius': radiusKm,
+        },
+      );
+      final List<dynamic> data = response.data;
+      return data.map((e) => TreeLocationModel.fromJson(e)).toList();
+    } catch (e) {
+      throw NetworkErrorHandler.handle(e);
+    }
   }
 
   @override
   Future<void> tagTree(TreeLocationModel tree) async {
-    await Future.delayed(const Duration(seconds: 1));
-    // In a real app, this would hit the API.
+    if (ApiConstants.useMockData) {
+      await Future.delayed(
+          const Duration(seconds: ApiConstants.mockDelaySeconds));
+      return;
+    }
+
+    try {
+      await dio.post(ApiEndpoints.gisMarkers, data: tree.toJson());
+    } catch (e) {
+      throw NetworkErrorHandler.handle(e);
+    }
   }
 
   @override
   Future<List<TreeLocationModel>> getAllTreeLocations() async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    return _mockTreeLocations();
+    if (ApiConstants.useMockData) {
+      await Future.delayed(
+          const Duration(seconds: ApiConstants.mockDelaySeconds));
+      return _mockTreeLocations();
+    }
+
+    try {
+      final response = await dio.get(ApiEndpoints.gisMarkers);
+      final List<dynamic> data = response.data;
+      return data.map((e) => TreeLocationModel.fromJson(e)).toList();
+    } catch (e) {
+      throw NetworkErrorHandler.handle(e);
+    }
   }
 
   List<TreeLocationModel> _mockTreeLocations() {
@@ -57,3 +103,4 @@ class GISRepositoryImpl implements GISRepository {
     ];
   }
 }
+

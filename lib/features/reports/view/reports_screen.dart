@@ -8,7 +8,7 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_chart_card.dart';
 import '../../../core/widgets/app_legend.dart';
 import '../../../core/theme/app_theme.dart';
-import '../viewmodel/reports_viewmodel.dart';
+import '../../../providers/providers.dart';
 import '../model/report_model.dart';
 
 class ReportsScreen extends ConsumerWidget {
@@ -21,8 +21,9 @@ class ReportsScreen extends ConsumerWidget {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        appBar: AppAppBar(
-          title: 'Reports & Analytics',
+        appBar: AppBar(
+          toolbarHeight: 0,
+          elevation: 0,
           bottom: const TabBar(
             isScrollable: true,
             labelColor: AppTheme.softYellow,

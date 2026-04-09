@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../viewmodel/settings_viewmodel.dart';
+import '../../../providers/providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -124,7 +124,7 @@ class SettingsScreen extends ConsumerWidget {
                 style: TextStyle(fontSize: 11)),
             value: settings.enableSMS,
             onChanged: viewModel.toggleSMS,
-            activeColor: AppTheme.primaryGreen,
+            activeThumbColor: AppTheme.primaryGreen,
           ),
           const Divider(height: 1),
           SwitchListTile(
@@ -133,7 +133,7 @@ class SettingsScreen extends ConsumerWidget {
                 style: TextStyle(fontSize: 11)),
             value: settings.enableEmail,
             onChanged: viewModel.toggleEmail,
-            activeColor: AppTheme.primaryGreen,
+            activeThumbColor: AppTheme.primaryGreen,
           ),
           const Divider(height: 1),
           SwitchListTile(
@@ -143,7 +143,7 @@ class SettingsScreen extends ConsumerWidget {
                 style: TextStyle(fontSize: 11)),
             value: settings.enableWhatsApp,
             onChanged: viewModel.toggleWhatsApp,
-            activeColor: AppTheme.primaryGreen,
+            activeThumbColor: AppTheme.primaryGreen,
           ),
           const Divider(height: 1),
           SwitchListTile(
@@ -153,7 +153,7 @@ class SettingsScreen extends ConsumerWidget {
                 style: TextStyle(fontSize: 11)),
             value: settings.enableSLABreachAlert,
             onChanged: viewModel.toggleSLABreachAlert,
-            activeColor: Colors.redAccent,
+            activeThumbColor: Colors.redAccent,
           ),
         ],
       ),

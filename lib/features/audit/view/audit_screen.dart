@@ -6,7 +6,7 @@ import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/glass_card.dart';
-import '../viewmodel/audit_viewmodel.dart';
+import '../../../providers/providers.dart';
 import '../model/audit_model.dart';
 
 class AuditScreen extends ConsumerWidget {

@@ -1,5 +1,10 @@
 # VERSION.md - Project Tracking
 
+[0.5.2] - 2026-04-09
+
+### Fixed
+- `ReportsScreen`: Removed redundant AppBar title space to show tab bar only.
+
 [0.5.0] - 2026-04-08
 
 ### Added
